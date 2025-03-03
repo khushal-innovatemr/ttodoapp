@@ -1,71 +1,67 @@
 const express = require('express');
-const Todo = require('../models'); 
+const Todo = require('../models');
 const db = require('../dbconfig');
+const verify = require('../middleware/auth');
 const router = express.Router();
 
 db;
 
-router.get('/', async (req, res) => {
+router.get('/', verify, async (req, res) => {
     try {
-        const tasks = await Todo.find();
+        const userId = req.user.id;
+        const tasks = await Todo.find({ userId: userId });
         return res.send(tasks);
     } catch (err) {
         console.error("Error while Getting Tasks:", err);
-        return  res.status(400).send("Error Fetching Tasks");
+        return res.status(400).send("Error Fetching Tasks");
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', verify, async (req, res) => {
     try {
-        
-        const id = req.body.id;
-        const name = req.body.name;
-        const description = req.body.description;
-        const createdAt = req.body.createdAt;
-        const deadline = req.body.deadline;
-        const completed = req.body.completed;
+        const userId = req.user.id;
+        const { id, name, description, createdAt, deadline, completed } = req.body;
 
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         console.log(req.body);
 
-        const new_task = new Todo({ 
-            id, 
-            name, 
-            description, 
-            createdAt: createdAt ? new Date(createdAt).toDateString()
-                                : new Date().toLocaleDateString("en-US", options), 
-            deadline: deadline ? new Date(deadline).toDateString()
-                                : new Date().toLocaleDateString("en-US", options), 
-            completed 
+        const new_task = new Todo({
+            id,
+            name,
+            description,
+            createdAt: createdAt ? new Date(createdAt).toDateString() : new Date().toLocaleDateString("en-US", options),
+            deadline: deadline ? new Date(deadline).toDateString() : new Date().toLocaleDateString("en-US", options),
+            completed,
+            userId
         });
-    
+
         console.log(new_task);
-        
+
         const result = await new_task.save();
         console.log("Task Saved");
-        
+
         res.send(result);
-    } 
-    catch (error) {
+    } catch (error) {
         console.error("Error:", error);
         res.status(400).send("Task not saved");
     }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", verify, async (req, res) => {
     try {
+        const userId = req.user.id;
         const id = req.params.id;
         const { name, description, completed, deadline } = req.body;
 
         console.log(name + " " + id);
 
         const updatedTask = await Todo.findOneAndUpdate(
-            { id: id },
-            { 
-                name, 
-                description, 
-                deadline: new Date(deadline).toDateString(), 
-                completed 
+            { id: id, userId: userId },
+            {
+                name,
+                description,
+                deadline: new Date(deadline).toDateString(),
+                completed
             },
             { new: true }
         );
@@ -83,10 +79,11 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verify, async (req, res) => {
     try {
+        const userId = req.user.id;
         const id = req.params.id;
-        const deletedTask = await Todo.findOneAndDelete({ id: id });
+        const deletedTask = await Todo.findOneAndDelete({ id: id, userId: userId });
 
         if (!deletedTask) {
             console.log("Delete Failed");

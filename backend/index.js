@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const router = require('./controllers/routers');
 const authRouter = require('./controllers/authroutes');
@@ -9,6 +10,12 @@ const app = express();
 const PORT = process.env.PORT||3001
 
 app.use(cors());
+app.use(session({
+    secret: 'your_secret_key', 
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } 
+  }));
 
 app.use(bodyParser.json());
 app.use(cookieParser());

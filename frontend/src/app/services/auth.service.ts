@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private API_URL = 'https://dfsf-pcax.onrender.com/auth';
+  private API_URL = 'http://localhost:3001/auth';
 
   constructor(private http: HttpClient, private router: Router) {}
 

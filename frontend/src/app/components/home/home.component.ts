@@ -1,4 +1,3 @@
-// components/home/home.component.ts
 import { Component, OnInit } from '@angular/core';
 import { TodoService } from '../../services/todo.service';
 import { TodoAddComponent } from '../todo-add/todo-add.component';
@@ -12,7 +11,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [TodoAddComponent, FormsModule, CommonModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
   tasks: any[] = [];
@@ -32,6 +31,7 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
+
   getTasks(): void {
     this.todo.get('tasks').subscribe({
       next: (res: any) => {
@@ -45,26 +45,26 @@ export class HomeComponent implements OnInit {
 
   addTask(task: any): void {
     this.todo.post('tasks', task).subscribe({
-      next:(res: any) => {
+      next: (res: any) => {
         console.log('Task added:', res);
         this.getTasks();
       },
-      error:(error: any) => {
+      error: (error: any) => {
         console.error('Error Adding Task', error);
       }
-  });
+    });
   }
 
   handleDelete(task: any): void {
     this.todo.delete('tasks/' + task.id, {}).subscribe({
-      next:(res: any) => {
+      next: (res: any) => {
         console.log('Task Deleted:', res);
         this.getTasks();
       },
-      error:(error: any) => {
+      error: (error: any) => {
         console.error('Error Deleting Task:', error);
       }
-  });
+    });
   }
 
   handleEdit(task: any): void {
@@ -110,4 +110,4 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-} 
+}

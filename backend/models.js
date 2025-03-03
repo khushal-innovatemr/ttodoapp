@@ -7,6 +7,7 @@ const TaskSchema = new mongoose.Schema({
     createdAt:{type:String, default:new Date().toDateString()},
     deadline:{type:String, default:new Date().toDateString()},
     completed:{type:Boolean, default:"false"},
+    userId: { type: String, required: true }
 } )
 
 TaskSchema.pre('save', async function(next) {

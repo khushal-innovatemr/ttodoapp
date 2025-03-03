@@ -29,7 +29,6 @@ export class LoginComponent {
         this.token = res.token;  
         localStorage.setItem('token', res.token);
 
-        // Show token verified message at top-right
         this.showTokenMessage = true;
         this.message = 'Token Verified!!';
         this.isSuccess = true;
