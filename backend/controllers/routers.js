@@ -1,7 +1,9 @@
 const express = require('express');
 const Todo = require('../models');
+const User = require('../models2');
 const db = require('../dbconfig');
 const verify = require('../middleware/auth');
+const role_middleware = require('../middleware/role_auth');
 const router = express.Router();
 
 db;
@@ -9,21 +11,22 @@ db;
 router.get('/', verify, async (req, res) => {
     try {
         const userId = req.user.id;
-        const tasks = await Todo.find({ userId: userId });
+        console.log(req.user.IsAdmin);
+        const tasks = req.user.IsAdmin ? await Todo.find() : await Todo.find({ userId: userId });
         return res.send(tasks);
+
     } catch (err) {
         console.error("Error while Getting Tasks:", err);
         return res.status(400).send("Error Fetching Tasks");
     }
 });
 
-router.post('/', verify, async (req, res) => {
+router.post('/',verify,role_middleware(["admin","manager","user"]) ,async (req, res) => {
     try {
         const userId = req.user.id;
         const { id, name, description, createdAt, deadline, completed } = req.body;
 
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        console.log(req.body);
 
         const new_task = new Todo({
             id,
@@ -47,7 +50,7 @@ router.post('/', verify, async (req, res) => {
     }
 });
 
-router.put("/:id", verify, async (req, res) => {
+router.put("/:id", verify,role_middleware(["admin","manager","user"]),async (req, res) => {
     try {
         const userId = req.user.id;
         const id = req.params.id;
@@ -79,11 +82,11 @@ router.put("/:id", verify, async (req, res) => {
     }
 });
 
-router.delete("/:id", verify, async (req, res) => {
+router.delete("/:id", verify,role_middleware(["admin"]),async (req, res) => {
     try {
         const userId = req.user.id;
         const id = req.params.id;
-        const deletedTask = await Todo.findOneAndDelete({ id: id, userId: userId });
+        const deletedTask = await Todo.findOneAndDelete({ id: id });
 
         if (!deletedTask) {
             console.log("Delete Failed");
@@ -97,5 +100,26 @@ router.delete("/:id", verify, async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
+// router.get('/user', verify, role_middleware(['admin']), async (req, res) => {
+//     try {
+//         const usersWithTasks = await User.aggregate([
+//             {
+//                 $lookup: {
+//                     from: 'todos',
+//                     localField: 'id',
+//                     foreignField: 'userId',
+//                     as: 'tasks'
+//                 }
+//             }
+//         ]);
 
+//         res.send(usersWithTasks);
+//     } catch (err) {
+//         console.error("Error while fetching users and tasks:", err);
+//         res.status(500).send("Error Fetching Users and Tasks");
+//     }
+// });
 module.exports = router;
+
+
+// const role = req.user.isAdmin ? role = {id} :role = {id,userId};

@@ -13,11 +13,11 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/login`, { email, password });
+    return this.http.post(`${this.API_URL}/login`, { email, password});
   }
 
-  register(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/register`, { email, password });
+  register(email: string, password: string, role: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/register`, { email, password,role});
   }
 
   logout(): void {

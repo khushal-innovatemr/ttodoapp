@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "unleash-client": "^6.6.0"
+  }
+}

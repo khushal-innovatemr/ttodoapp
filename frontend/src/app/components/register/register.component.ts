@@ -14,13 +14,14 @@ import { FormsModule } from '@angular/forms';
 export class RegisterComponent {
   email = '';
   password = '';
+  role = '';
   errorMessage = '';
   successMessage = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
   register(): void {
-    this.authService.register(this.email, this.password).subscribe({
+    this.authService.register(this.email, this.password,this.role).subscribe({
       next: () => {
         this.successMessage = 'User Saved!';
         
