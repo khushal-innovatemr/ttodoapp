@@ -19,7 +19,7 @@ export class TodoAddComponent implements OnInit {
     this.handleChange();
   }
 
-  name:string = 'sample';
+  name:string = ' ';
   description:string = 'sample';
   deadline:any
   createdAt:any
