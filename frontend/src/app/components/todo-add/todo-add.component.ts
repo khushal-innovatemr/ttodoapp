@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-todo-add',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule], 
   templateUrl: './todo-add.component.html',
   styleUrl: './todo-add.component.css'
 })
@@ -25,10 +25,8 @@ export class TodoAddComponent implements OnInit {
   createdAt:any
   disable:boolean = true;
 
-
-
   @Output() todoAdd:EventEmitter<any> = new EventEmitter();
-
+ 
   handleChange(){
     if(this.name.length>0 && this.description.length >0){
       this.disable = false;
@@ -39,7 +37,6 @@ export class TodoAddComponent implements OnInit {
   }
 
   handleSubmit(){
-
     this.todoAdd.emit({
       name:this.name,
       description:this.description,

@@ -12,7 +12,6 @@ const role_middleware = (required_roles) => {
             req.user.IsAdmin = (req.user.role === 'admin');
 
             if (!required_roles.includes(req.user.role)) {
-                res.alert({message:"You don't have permission, Ps: Request Admin"})
                 return res.status(203).json({ error: "Forbidden: You don't have permission, Ps: Request Admin" });
             }
             next();

@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private API_URL = 'https://dfsf-pcax.onrender.com/auth';
+  private API_URL = 'http://localhost:3002/auth';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -23,6 +23,18 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
+  }
+
+  AddUser(email: string, password: string, role: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/login/add`, { email, password, role });
+  }
+
+  getUsers(): Observable<any> {
+    return this.http.get(`${this.API_URL}/login/users`);
+  }
+
+  deleteUsers(userId: string, payload: object): Observable<any> {
+    return this.http.delete(`${this.API_URL}/login/delete`, { body: { userId } });
   }
 
   isAuthenticated(): boolean {

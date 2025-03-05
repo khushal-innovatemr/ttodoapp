@@ -86,39 +86,19 @@ router.delete("/:id", verify,role_middleware(["admin"]),async (req, res) => {
     try {
         const userId = req.user.id;
         const id = req.params.id;
-        const deletedTask = await Todo.findOneAndDelete({ id: id });
+        const deletedTask = await Todo.findOneAndDelete({ id: id ,userId: userId});
 
         if (!deletedTask) {
             console.log("Delete Failed");
             return res.status(404).json({ error: "Task Not Found" });
         }
-
         return res.status(200).json({ message: "Task Deleted Successfully" });
-
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
-// router.get('/user', verify, role_middleware(['admin']), async (req, res) => {
-//     try {
-//         const usersWithTasks = await User.aggregate([
-//             {
-//                 $lookup: {
-//                     from: 'todos',
-//                     localField: 'id',
-//                     foreignField: 'userId',
-//                     as: 'tasks'
-//                 }
-//             }
-//         ]);
 
-//         res.send(usersWithTasks);
-//     } catch (err) {
-//         console.error("Error while fetching users and tasks:", err);
-//         res.status(500).send("Error Fetching Users and Tasks");
-//     }
-// });
 module.exports = router;
 
 

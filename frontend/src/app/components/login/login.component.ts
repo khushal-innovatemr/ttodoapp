@@ -18,7 +18,7 @@ export class LoginComponent {
   isSuccess = false;
   token: string | null = null;
   errorMessage = '';
-  showTokenMessage = false;
+  showTokenMessage = false; 
   showRedirectMessage = false;
 
   constructor(private authService: AuthService, private router: Router) {}
@@ -33,12 +33,20 @@ export class LoginComponent {
         this.message = 'Token Verified!!';
         this.isSuccess = true;
 
-        // Show redirect message below submit button after 2 seconds
+        if(res.role == 'admin'){
+          this.message = 'Redirecting to Admin Dashboard';
+
+          setTimeout(() => {
+            this.router.navigate(['/admin'])
+          },2000);
+          return
+        }
+        
+
         setTimeout(() => {
           this.showRedirectMessage = true;
           this.message = 'Redirecting to Dashboard...';
 
-          // Redirect to dashboard after 2 more seconds
           setTimeout(() => {
             this.router.navigate(['/dashboard']);
           }, 2000);
