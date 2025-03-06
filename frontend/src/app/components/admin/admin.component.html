@@ -21,26 +21,33 @@
                         <th class="py-2 px-4 border-b">Email</th>
                         <th class="py-2 px-4 border-b">Role</th>
                         <th class="py-2 px-4 border-b">Actions</th>
+                        <th class="py-2 px-4 border-b">Total_Tasks</th>
                         <th class="py-2 px-4 border-b">Tasks</th>
                     </tr>
                 </thead>
                 <tbody>
                     @for (task of tasks; track $index) {
-                        @if(task.role) {
+                        @if (task.role) {
                             <tr class="hover:bg-blue-100 transition duration-300">
                                 <td class="py-2 px-4 border-b">{{ task.email }}</td>
                                 <td class="py-2 px-4 border-b">{{ task.role }}</td>
                                 <td class="py-2 px-4 border-b">
                                     <button (click)="SeeUserTasks(task.id)" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded">View Tasks</button>
                                 </td>
+                                <td class="py-2 px-4 border-b">{{ tasks.length}}</td>
+                                <td>
+                                    <td class="py-2 px-4 border-b">
+                                        @for (view of views[task.id]; track $index) {
+                                            @if (view.id) {
+                                                {{ view.name }}: {{ view.description }}
+                                            }
+                                        }
+                                </td>
                             </tr>
                         }
                     }
                 </tbody>
-            </table>
-            <table>
-                
-            </table>
+            </table>    
         </ul>                
     </div>
 </div>
