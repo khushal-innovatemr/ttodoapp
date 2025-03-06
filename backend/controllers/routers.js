@@ -12,7 +12,13 @@ router.get('/', verify, async (req, res) => {
     try {
         const userId = req.user.id;
         console.log(req.user.IsAdmin);
-        const tasks = req.user.IsAdmin ? await Todo.find() : await Todo.find({ userId: userId });
+        let tasks;
+        if (req.user.role === "manager") {
+            tasks = await Todo.find()
+        }
+        else {
+            tasks = await Todo.find({ userId: userId });
+        }
         return res.send(tasks);
 
     } catch (err) {
@@ -21,7 +27,7 @@ router.get('/', verify, async (req, res) => {
     }
 });
 
-router.post('/',verify,role_middleware(["admin","manager","user"]) ,async (req, res) => {
+router.post('/', verify, role_middleware(["admin", "manager", "user"]), async (req, res) => {
     try {
         const userId = req.user.id;
         const { id, name, description, createdAt, deadline, completed } = req.body;
@@ -47,8 +53,9 @@ router.post('/',verify,role_middleware(["admin","manager","user"]) ,async (req, 
     } catch (error) {
         console.error("Error:", error);
         res.status(400).send("Task not saved");
-    }
+    } 
 });
+
 
 router.put("/:id", verify,role_middleware(["admin","manager","user"]),async (req, res) => {
     try {
@@ -82,11 +89,11 @@ router.put("/:id", verify,role_middleware(["admin","manager","user"]),async (req
     }
 });
 
-router.delete("/:id", verify,role_middleware(["admin"]),async (req, res) => {
+router.delete("/:id", verify, role_middleware(["manager"]), async (req, res) => {
     try {
-        const userId = req.user.id;
+        // const userId = req.user.id;
         const id = req.params.id;
-        const deletedTask = await Todo.findOneAndDelete({ id: id ,userId: userId});
+        const deletedTask = await Todo.findOneAndDelete({ id: id });
 
         if (!deletedTask) {
             console.log("Delete Failed");
@@ -99,7 +106,21 @@ router.delete("/:id", verify,role_middleware(["admin"]),async (req, res) => {
     }
 });
 
+
+
+// router.get('/tasks', verify, async (req, res) => {
+//     try {
+//       const userId = req.  
+//       const tasks = await Todo.find({ userId: userId });
+//       if (tasks.length === 0) {
+//         return res.status(404).json({ message: 'No tasks found for this user.' });
+//       }
+//       return res.json(tasks);
+//     } catch (err) {
+//       console.error('Error while getting tasks:', err);
+//       return res.status(500).json({ error: 'Error fetching tasks' });
+//     }
+//   });
+
 module.exports = router;
-
-
 // const role = req.user.isAdmin ? role = {id} :role = {id,userId};

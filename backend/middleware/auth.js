@@ -14,6 +14,7 @@ const verify = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
+        console.log('----------------------------------',decoded);
         req.user.IsAdmin = decoded.role === 'admin'; 
         next();
     } catch (err) {

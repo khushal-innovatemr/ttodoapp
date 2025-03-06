@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
         this.getTasks();
       },
       error:(error: any) => {
-        console.error('Error Deleting Task:', error);
+        console.error('Error Deleting Task:',);
       }
   });
   }

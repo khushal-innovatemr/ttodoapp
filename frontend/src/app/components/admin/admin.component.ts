@@ -16,6 +16,7 @@ export class AdminComponent {
   password = '';
   role:any = '';
   tasks:any = [];
+  views:any = [];
   errorMessage = '';
   successMessage = '';
 
@@ -59,8 +60,20 @@ else{
   this.flag=!this.flag
 }}
 
+SeeUserTasks(userId: string): void {
+  this.authService.viewUserTasks(userId).subscribe({
+    next: (res: any) => {
+      this.views = res;
+      console.log('User tasks:', this.views);
+    },
+    error: (error: any) => {
+      console.error('Error Getting Tasks', error);
+    }
+  });
+}
 
-  DeleteUser(users: any): void {
+
+DeleteUser(users: any): void {
     this.authService.deleteUsers(users.userId, {}).subscribe({
       next: (res: any) => {
         console.log('User Deleted:', res);

@@ -9,21 +9,22 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = process.env.PORT||3001
 
-app.use(cors());
-// app.use(cors({
-//     origin: 'https://emp-rust-three.vercel.app',
-//     methods: 'GET, POST, PUT, DELETE, OPTIONS',
-//     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token, x-refresh-token, _id',
-//     credentials: true
-// }));
+// app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:4200', 
+    methods: 'GET, POST, PUT, DELETE, OPTIONS',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    credentials: true 
+}));
 
 app.use(session({
-    secret: 'your_secret_key', 
+    secret: process.env.SESSION_SECRET || 'your_session_secret',
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } 
+    saveUninitialized: false,
+    
   }));
 
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser());
 

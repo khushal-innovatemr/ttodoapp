@@ -1,6 +1,6 @@
 // services/auth.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -12,12 +12,21 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  
+  // Use this for non-auth endpoints
+  private header_options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    }),
+    withCredentials: true
+  }
+
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/login`, { email, password});
+    return this.http.post(`${this.API_URL}/login`, { email, password},this.header_options);
   }
 
   register(email: string, password: string, role: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/register`, { email, password,role});
+    return this.http.post(`${this.API_URL}/register`, { email, password,role},this.header_options);
   }
 
   logout(): void {
@@ -33,6 +42,9 @@ export class AuthService {
     return this.http.get(`${this.API_URL}/login/users`);
   }
 
+  viewUserTasks(userId: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/view/${userId}`);
+  }
   deleteUsers(userId: string, payload: object): Observable<any> {
     return this.http.delete(`${this.API_URL}/login/delete`, { body: { userId } });
   }
