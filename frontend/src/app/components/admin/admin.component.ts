@@ -27,7 +27,7 @@ export class AdminComponent {
   noTasksMessage = '';
   selectedUserId: string | null = null;
   showTasks = false;
-  currentUserId: string = ''; // Store the user whose tasks are being viewed
+  currentUserId: string = ''; 
   user: any = [];
 
 
@@ -93,6 +93,7 @@ SeeUserTasks(userId: string): void {
       this.showTasks = true;
       this.currentUserId = userId;
       console.log(`Tasks for user ${userId}:`, this.views);
+      console.log(this.currentUserId);
     },
     error: (error: any) => {
       console.error('Error Getting Tasks', error);
@@ -100,7 +101,6 @@ SeeUserTasks(userId: string): void {
       this.views = [];
       this.showTasks = true;
       this.currentUserId = userId;
-      console.log(this.currentUserId);
     },
   });
 }
@@ -142,23 +142,25 @@ SeeUserTasks(userId: string): void {
       }
     });
   }
-  
-  DeleteUser(user: any): void {
-    if (!user.id) {
-      console.error('Error: User ID is missing!');
+   DeleteUser(currentUserId): void {
+    if (!this.currentUserId) {
+      console.error('No user selected for deletion');
       return;
     }
   
-    this.authService.deleteUsers(user.id).subscribe({
+    this.authService.deleteUsers(this.currentUserId).subscribe({
       next: () => {
-        console.log('User Deleted:', user.id);
-        this.user = this.user.filter((u: any) => u.id !== user.id); // Remove the deleted user from the list
+        console.log('User Deleted:', this.currentUserId);
+        this.user = this.user.filter((u: any) => u.id !== this.currentUserId);
+        this.currentUserId = ''; 
+        
       },
       error: (error: any) => {
         console.error('Error Deleting User:', error);
       }
     });
   }
+  
 
 
   handleEdit(task: any): void {
