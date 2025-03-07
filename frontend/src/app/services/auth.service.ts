@@ -45,9 +45,14 @@ export class AuthService {
   viewUserTasks(userId: string): Observable<any> {
     return this.http.get(`${this.API_URL}/view/${userId}`);
   }
-  deleteUsers(userId: string, payload: object): Observable<any> {
-    return this.http.delete(`${this.API_URL}/login/delete`, { body: { userId } });
+  
+  deleteUsers(userId: string): Observable<any> {
+    console.log('##################',userId);
+    
+    return this.http.delete(`${this.API_URL}/login/delete/${userId}`);
   }
+
+
 
   isAuthenticated(): boolean {
     if (typeof window !== 'undefined') {

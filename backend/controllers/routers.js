@@ -57,7 +57,7 @@ router.post('/', verify, role_middleware(["admin", "manager", "user"]), async (r
 });
 
 
-router.put("/:id", verify,role_middleware(["admin","manager","user"]),async (req, res) => {
+router.put("/:id", verify,role_middleware(["manager","admin","user"]),async (req, res) => {
     try {
         const userId = req.user.id;
         const id = req.params.id;
@@ -87,9 +87,9 @@ router.put("/:id", verify,role_middleware(["admin","manager","user"]),async (req
         console.log(err);
         return res.status(500).json({ error: "Internal Server Error" });
     }
-});
+}); 
 
-router.delete("/:id", verify, role_middleware(["manager"]), async (req, res) => {
+router.delete("/:id", verify, role_middleware(["manager","admin"]), async (req, res) => {
     try {
         // const userId = req.user.id;
         const id = req.params.id;

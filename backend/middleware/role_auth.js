@@ -9,7 +9,7 @@ const role_middleware = (required_roles) => {
             const verified = jwt.verify(role_auth, process.env.JWT_SECRET);
             req.user = verified;
 
-            req.user.IsAdmin = (req.user.role === 'manager');
+            req.user.IsAdmin = (req.user.role === 'manager'||'admin');
 
             if (!required_roles.includes(req.user.role)) {
                 return res.status(203).json({ error: "Forbidden: You don't have permission, Ps: Request Admin" });

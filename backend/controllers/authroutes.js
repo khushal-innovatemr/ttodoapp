@@ -79,9 +79,9 @@ router.post('/login/add', verify, async (req, res) => {
 });
 
 router.get('/login/users', verify, async (req, res) => {
-    if (req.user.IsAdmin) {
+    if (req.user.role === 'admin') {
         try {
-            const users = await User.find({}, 'id email role'); 
+            const users = await User.find({ role: { $in: ['user', 'manager'] } }, 'id email role');
             return res.send(users);
         } catch (err) {
             console.error("Fetching users error:", err);
@@ -110,31 +110,28 @@ router.get('/view/:id', verify, async(req, res) => {
     }
 });
 
-// router.get('/view/users',verify,async(req,res) => {
-//     try{
-//         const users = await User.findOne({id});
-//         return res.send(users);
-//     }
-//     catch (err) {
-//         console.error("Fetching users error:", err);
-//         res.status(500).send({ error: "Server Error" });
-//     }
-// })
 
-router.delete('/login/delete', verify, async (req, res) => {
-    if (req.user.IsAdmin) {
-        try {
-            const { userId } = req.body;
-            await User.findByIdAndDelete(userId);
-            res.send({ message: "User deleted successfully" });
-        } catch (err) {
-            console.error("Deleting user error:", err);
-            res.status(500).send({ error: "Server Error" });
+router.delete('/login/delete/:id', verify, async (req, res) => {
+    const id = req.user.id;  
+    console.log("Attempting to delete user with ID:", id);
+    try {
+        const user = await User.findOneAndDelete({ id: id });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
         }
-    } else {
-        res.status(403).send({ error: "Access denied" });
+        await Todo.deleteMany({ userId: id });
+
+        res.json({ message: "User deleted successfully" });
+    } catch (err) {
+        console.error("Deleting user error:", err);
+        res.status(500).json({ error: "Server Error" });
     }
 });
+
+
+
+
 
 router.post('/logout', (req, res) => {
     req.session.destroy(err => {

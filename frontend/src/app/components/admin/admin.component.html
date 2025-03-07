@@ -1,5 +1,5 @@
 <div>
-    <div class="text-3xl font-semibold max-w-sm mx-auto bg-blue-50 text-center p-5 rounded-lg mt-2 
+    <div class="text-3xl font-semibold max-w-sm mx-auto bg-blue-50 text-center p-5 rounded-lg mt-2
      hover:bg-blue-600 hover:text-white transition duration-300 ease-in-out my-5 shadow-lg">
         Welcome Admin
     </div>
@@ -21,33 +21,89 @@
                         <th class="py-2 px-4 border-b">Email</th>
                         <th class="py-2 px-4 border-b">Role</th>
                         <th class="py-2 px-4 border-b">Actions</th>
-                        <th class="py-2 px-4 border-b">Total_Tasks</th>
-                        <th class="py-2 px-4 border-b">Tasks</th>
+                        <th class="py-2 px-4 border-b">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @for (task of tasks; track $index) {
-                        @if (task.role) {
-                            <tr class="hover:bg-blue-100 transition duration-300">
-                                <td class="py-2 px-4 border-b">{{ task.email }}</td>
-                                <td class="py-2 px-4 border-b">{{ task.role }}</td>
-                                <td class="py-2 px-4 border-b">
-                                    <button (click)="SeeUserTasks(task.id)" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded">View Tasks</button>
-                                </td>
-                                <td class="py-2 px-4 border-b">{{ tasks.length}}</td>
-                                <td>
-                                    <td class="py-2 px-4 border-b">
-                                        @for (view of views[task.id]; track $index) {
-                                            @if (view.id) {
-                                                {{ view.name }}: {{ view.description }}
-                                            }
-                                        }
-                                </td>
-                            </tr>
-                        }
+                    @for (task of tasks; track task.id) {
+                        <tr class="hover:bg-blue-100 transition duration-300">
+                            <td class="py-2 px-4 border-b">{{ task.email }}</td>
+                            <td class="py-2 px-4 border-b">{{ task.role }}</td>
+                            <td class="py-2 px-4 border-b">
+                                <button (click)="SeeUserTasks(task.id)"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white rounded">
+                                    {{ showTasks && currentUserId === task.id ? 'Hide Tasks:' : 'View Tasks' }} ({{ task.totalTasks }})
+                                </button>
+                            </td>
+                            <td class="py-2 px-4 border-b">
+                                <button (click)="DeleteUser(user)" class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>    
         </ul>                
     </div>
 </div>
+{{showTasks}}
+
+@if (showTasks) {
+    <div class="max-w-4xl mx-auto my-5">
+        <div class="text-2xl font-semibold text-center p-3 bg-blue-50 rounded-lg shadow">
+            User's Task List
+        </div>
+
+        @if (noTasksMessage) {
+            <p class="text-center text-red-500 font-semibold p-3">{{ noTasksMessage }}</p>
+        } @else {
+            <div class="flex flex-col md:flex-row mx-auto">
+                <div class="flex flex-col my-3 p-5 m-3 rounded-lg bg-white shadow-xl md:w-2/4 transition-all duration-300 hover:bg-blue-200">
+                    <p class="font-semibold text-xl text-black">Todo</p>
+                    <ul class="flex flex-col space-y-3">
+                        @for (task of views; track task.id) {
+                            @if (!task.completed) {
+                                <div class="p-5 m-2 bg-blue-100 rounded-lg shadow-lg hover:bg-blue-300">
+                                    <p class="font-semibold text-black">Name</p>
+                                    <p class="bg-blue-200 p-3 rounded-lg shadow text-black">{{ task.name }}</p>
+                                    <p class="font-semibold text-black mt-1">Description</p>
+                                    <p class="bg-blue-200 p-3 rounded-lg shadow text-black">{{ task.description }}</p>
+                                    <p class="font-semibold text-black mt-1">Deadline</p>
+                                    <p class="bg-blue-200 p-3 rounded-lg shadow text-black">{{ task.deadline }}</p>
+                                    <button (click)="handleDelete(task)"
+                                        class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded mt-2">
+                                        Delete
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </ul>
+                </div>
+
+                <!-- Completed Tasks -->
+                <div class="flex flex-col my-3 p-5 m-3 rounded-lg bg-white shadow-xl md:w-2/4 transition-all duration-300 hover:bg-green-100">
+                    <p class="font-semibold text-xl text-black">Completed</p>
+                    <ul class="flex flex-col space-y-3">
+                        @for (task of views; track task.id) {
+                            @if (task.completed) {
+                                <div class="p-5 m-2 bg-green-100 rounded-lg shadow-xl hover:bg-green-200">
+                                    <p class="font-semibold text-black">Name</p>
+                                    <p class="bg-green-300 p-3 rounded-lg shadow text-black">{{ task.name }}</p>
+                                    <p class="font-semibold text-black mt-1">Description</p>
+                                    <p class="bg-green-300 p-3 rounded-lg shadow text-black">{{ task.description }}</p>
+                                    <p class="font-semibold text-black mt-1">Deadline</p>
+                                    <p class="bg-green-300 p-3 rounded-lg shadow text-black">{{ task.deadline }}</p>
+                                    <button (click)="handleDelete(task)"
+                                        class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded mt-2">
+                                        Delete
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </ul>
+                </div>    
+            </div>
+        }
+    </div>
+}
