@@ -35,23 +35,14 @@ export class LoginComponent {
 
         if(res.role == 'admin'){
           this.message = 'Redirecting to Admin Dashboard';
-
-          setTimeout(() => {
-            this.router.navigate(['/admin'])
-          },2000);
+          this.router.navigate(['/admin'])
           return
         }
         
-
-        setTimeout(() => {
           this.showRedirectMessage = true;
           this.message = 'Redirecting to Dashboard...';
-
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 2000);
+          this.router.navigate(['/dashboard']);
           
-        }, 2000);
       },
       error: (err) => {
         this.errorMessage = err.error.error;

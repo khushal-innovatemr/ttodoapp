@@ -3,24 +3,21 @@ import { CanActivate, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class RedirectGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+    constructor(private authService: AuthService, private router: Router) { }
 
-  canActivate(): boolean {
-    if (this.authService.isAuthenticated()) {
-      const user = this.authService.getCurrentUser();
-      if (user.role === 'admin') {
-        this.router.navigate(['/admin']);
-      } else {
-        this.router.navigate(['/']);
-      }
-      alert('Please log out first');
-      console.log("Unauthorized Logout");
-      return false;
-    } else {
-      return true;
+    canActivate(): boolean {
+        if (this.authService.isAuthenticated()) {
+            alert('Please log out first');
+            console.log("Unauthorized Logout")
+            this.router.navigate(['/admin']);
+            return false;
+        }
+        else 
+        {
+            return true;
+        }
     }
-  }
 }
