@@ -1,4 +1,3 @@
-
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
@@ -27,7 +26,7 @@ export class AdminComponent {
   noTasksMessage = '';
   selectedUserId: string | null = null;
   showTasks = false;
-  currentUserId: string = ''; 
+  currentUserId: string = '';
   user: any = [];
 
 
@@ -57,13 +56,13 @@ export class AdminComponent {
   CheckUser(): void {
     if(this.flag){
       this.flag = !this.flag
-    this.authService.getUsers().subscribe({
-      next: (res: any) => {
-        this.tasks = res;
-        this.user =res;
+      this.authService.getUsers().subscribe({
+        next: (res: any) => {
+          this.tasks = res;
+          this.user =res;
       },
-      error: (error: any) => {
-        console.error('Error Fetching Users', error);
+        error: (error: any) => {
+          console.error('Error Fetching Users', error);
       }
     });
   }
@@ -72,8 +71,12 @@ else{
   this.flag=!this.flag
 }}
 
+
 SeeUserTasks(userId: string): void {
+  console.log(`SeeUserTasks called with userId: ${userId}`);
+ 
   if (this.showTasks && this.currentUserId === userId) {
+    console.log('Toggling off task view');
     this.views = [];
     this.noTasksMessage = '';
     this.showTasks = false;
@@ -81,26 +84,33 @@ SeeUserTasks(userId: string): void {
     return;
   }
 
+  console.log(`Fetching tasks for user: ${userId}`);
   this.authService.viewUserTasks(userId).subscribe({
     next: (res: any) => {
+      console.log('Response received:', res);
+
       if (res.message) {
+        console.log('No tasks message:', res.message);
         this.views = [];
         this.noTasksMessage = res.message;
       } else {
+        console.log('Tasks received:', res);
         this.views = res;
         this.noTasksMessage = '';
       }
+
       this.showTasks = true;
       this.currentUserId = userId;
-      console.log(`Tasks for user ${userId}:`, this.views);
-      console.log(this.currentUserId);
+      console.log(`Updated state -> showTasks: ${this.showTasks}, currentUserId: ${this.currentUserId}, views:`, this.views);
     },
     error: (error: any) => {
-      console.error('Error Getting Tasks', error);
+      console.error('Error fetching tasks:', error);
       this.noTasksMessage = 'Error fetching tasks!';
       this.views = [];
       this.showTasks = true;
       this.currentUserId = userId;
+     
+      console.log(`Error state -> showTasks: ${this.showTasks}, currentUserId: ${this.currentUserId}`);
     },
   });
 }
@@ -135,32 +145,37 @@ SeeUserTasks(userId: string): void {
     this.todo.delete('tasks/' + task.id, {}).subscribe({
       next: (res: any) => {
         console.log('Task Deleted:', res);
-        // this.SeeUserTasks(task.userId);
       },
-      error: (error: any) => {
+      error: (error:any) => {
         console.error('Error Deleting Task:');
       }
     });
   }
-   DeleteUser(currentUserId): void {
-    if (!this.currentUserId) {
-      console.error('No user selected for deletion');
-      return;
+
+  DeleteUser(userId: string): void {
+    if (!userId) {
+        console.error('No user selected for deletion');
+        return;
     }
-  
-    this.authService.deleteUsers(this.currentUserId).subscribe({
-      next: () => {
-        console.log('User Deleted:', this.currentUserId);
-        this.user = this.user.filter((u: any) => u.id !== this.currentUserId);
-        this.currentUserId = ''; 
-        
-      },
-      error: (error: any) => {
-        console.error('Error Deleting User:', error);
-      }
+    console.log('Trying to delete user with ID:', userId);
+    this.authService.deleteUsers(userId).subscribe({
+        next: () => {
+            console.log('User Deleted Successfully:', userId);
+            this.tasks = this.tasks.filter((u: any) => u.id !== userId);
+            // Reset view if the current viewed user is deleted
+            if (this.currentUserId === userId) {
+                this.views = [];
+                this.showTasks = false;
+                this.currentUserId = '';
+            }
+        },
+        error: (error: any) => {
+            console.error('Error Deleting User:', error);
+        }
     });
-  }
-  
+}
+
+ 
 
 
   handleEdit(task: any): void {

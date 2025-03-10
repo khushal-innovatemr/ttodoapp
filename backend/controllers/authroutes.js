@@ -1,3 +1,4 @@
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -60,7 +61,7 @@ router.post('/login', async (req, res) => {
             token: token,
             role:user.role,
         });
-        console.log("cookies",req.cookies)
+        // console.log("cookies",req.cookies)
         
     } catch (err) {
         console.error("Login error:", err);
@@ -112,26 +113,27 @@ router.get('/view/:id', verify, async(req, res) => {
 
 
 router.delete('/login/delete/:id', verify, async (req, res) => {
-    const id = req.user.id;  
-    console.log("Attempting to delete user with ID:", id);
+    const userId = req.params.id;  
+    console.log("Attempting to delete user with ID:", userId);
+    
     try {
-        const user = await User.findOneAndDelete({ id: id });
-
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: "Access denied. Only admins can delete users." });
+        }
+        
+        const user = await User.findOneAndDelete({ id: userId });
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-        await Todo.deleteMany({ userId: id });
-
+        
+        await Todo.deleteMany({ userId: userId });
+        
         res.json({ message: "User deleted successfully" });
     } catch (err) {
         console.error("Deleting user error:", err);
         res.status(500).json({ error: "Server Error" });
     }
 });
-
-
-
-
 
 router.post('/logout', (req, res) => {
     req.session.destroy(err => {

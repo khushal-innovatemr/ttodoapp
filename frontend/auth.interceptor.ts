@@ -10,7 +10,6 @@ export const AuthInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
   const router = inject(Router);
   const token = authService.getToken();
 
-  // Skip adding token for authentication endpoints
   if (req.url.includes('/api/auth/')) {
     return next(req);
   }

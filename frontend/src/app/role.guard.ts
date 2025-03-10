@@ -5,15 +5,16 @@ import { AuthService } from './services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class RoleGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
-
+    
   canActivate(): boolean {
-    if (this.authService.isAuthenticated()) {
-      return true;
+    if (this.authService.IsNotAdmin()) {
+            this.authService.logout();  
+            this.router.navigate(['/login']);
+            return false;
     } else {
-      this.router.navigate(['/login']);
-      return false;
+      return true;
     }
   }
 }
