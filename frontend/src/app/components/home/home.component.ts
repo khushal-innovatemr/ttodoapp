@@ -17,6 +17,9 @@ export class HomeComponent implements OnInit {
   tasks: any[] = [];
   edit: boolean = false;
   editTask: any = {};
+  countTask:any;
+  email: any = '';
+  showTodoList: boolean = false;
   
   constructor(
     private todo: TodoService,
@@ -27,8 +30,34 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
       this.getTasks();
+      this.getUserEmail();
     } else {
       this.router.navigate(['/login']);
+    }
+  }
+
+  taskcount(): void {
+    this.authService.get_count().subscribe({
+      next: (res: any) => {
+        this.countTask = res;
+        console.log(res);
+      },
+      error: (error: any) => {
+        console.error('Error Fetching Tasks', error);
+      }
+    });
+  }
+
+  getUserEmail(): void {
+    const token = this.authService.getToken();
+    if (token) {
+      try {
+        const tokenData = JSON.parse(atob(token.split('.')[1]));
+        this.email = tokenData.email || 'User';
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        this.email = 'User';
+      }
     }
   }
 
@@ -36,6 +65,7 @@ export class HomeComponent implements OnInit {
     this.todo.get('tasks').subscribe({
       next: (res: any) => {
         this.tasks = res;
+        console.log(res);
       },
       error: (error: any) => {
         console.error('Error Fetching Tasks', error);
@@ -45,33 +75,31 @@ export class HomeComponent implements OnInit {
 
   addTask(task: any): void {
     this.todo.post('tasks', task).subscribe({
-      next: (res: any) => {
+      next:(res: any) => {
         console.log('Task added:', res);
         this.getTasks();
       },
-      error: (error: any) => {
+      error:(error: any) => {
         console.error('Error Adding Task', error);
       }
-    });
+  });
   }
 
   handleDelete(task: any): void {
     this.todo.delete('tasks/' + task.id, {}).subscribe({
-      next: (res: any) => {
+      next:(res: any) => {
         console.log('Task Deleted:', res);
         this.getTasks();
       },
-      error: (error: any) => {
-        console.error('Error Deleting Task:');
+      error:(error: any) => {
+        console.error('Error Deleting Task:', error);
       }
-    });
+  });
   }
 
   handleEdit(task: any): void {
     this.edit = true;
-    console.log(task);
     this.editTask = task;
-    console.log(task);
   }
 
   handleComplete(task: any): void {
@@ -109,5 +137,13 @@ export class HomeComponent implements OnInit {
         console.error('Error Updating Task:', error);
       }
     });
+  }
+
+  toggleTodoList(): void {
+    this.showTodoList = !this.showTodoList;
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

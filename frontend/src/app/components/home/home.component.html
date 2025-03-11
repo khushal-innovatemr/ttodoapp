@@ -1,9 +1,28 @@
+<div class="text-xl absolute top-13 right-4 font-semibold max-w-sm mx-auto bg-orange-100 text-center p-2 rounded-lg 
+mt-5">
+    Welcome, {{ email }}
+</div>
 <div>
     <div class="text-3xl font-semibold max-w-sm mx-auto bg-blue-50 text-center p-5 rounded-lg mt-2 
      hover:bg-blue-600 hover:text-white transition duration-300 ease-in-out my-5 shadow-lg">
         Todo List
     </div>
   
+    <!--show Todo List Button -->
+    <div class="flex justify-center my-9 absolute left-10">
+        <button (click)="toggleTodoList()" 
+        class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300">
+        {{ showTodoList ? 'Hide TodoList' : 'View TodoList' }}
+    </button>
+    <br>
+</div>
+
+<button (click)="taskcount()" class="pl-5 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300">
+    Tasks    
+</button>
+<pre>{{ countTask | json }}</pre>
+    
+    @if (showTodoList) {
     <app-todo-add (todoAdd)="addTask($event)"></app-todo-add>
   
     <div class="max-w-4xl flex flex-col md:flex-row mx-auto">
@@ -84,5 +103,6 @@
             </ul>
         </div>    
     </div>
+}
   </div>
   

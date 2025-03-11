@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,12 +25,13 @@ export class TodoService {
   }
  
   get(uri: string) {
-    return this.http.get(this.Root + uri);
+    return this.http.get(this.Root + uri,{headers:this.getHeaders()});
   }
 
   post(uri: string, payload: object) {
     return this.http.post(this.Root + uri, payload);
   }
+  
 
   delete(uri: string, payload: object) {
     return this.http.delete(this.Root + uri, { body: payload});

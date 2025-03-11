@@ -3,6 +3,10 @@
      hover:bg-blue-600 hover:text-white transition duration-300 ease-in-out my-5 shadow-lg">
         Welcome Admin
     </div>
+    <div class="text-xl font-semibold max-w-sm mx-auto bg-orange-250 text-center p-5 rounded-lg mt-2
+     hover:bg-orange-600 hover:text-white transition duration-300 ease-in-out my-5 shadow-lg">
+        Hi,{{email}}
+    </div>
 </div>
 
 <button routerLink="/register" class="text-blue-600 text-center mt-2 hover:text-blue-800 transition duration-300 ease-in-out">
@@ -47,7 +51,7 @@
         </ul>                
     </div>
 </div>
-{{showTasks}}
+<!-- {{showTasks}} -->
 
 @if (showTasks) {
     <div class="max-w-4xl mx-auto my-5">

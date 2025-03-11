@@ -43,9 +43,13 @@ export class AuthService {
     return this.http.get(`${this.API_URL}/view/${userId}`);
   }
  
-  deleteUsers(userId: string): Observable<any> {
+  deleteUsers(userId: string): Observable<any> { 
     console.log('Deleting user with ID:', userId);
     return this.http.delete(`${this.API_URL}/login/delete/${userId}`);
+  }
+
+  get_count(): Observable<any> {
+    return this.http.get(`${this.API_URL}/hello`);
   }
 
   isAuthenticated(): boolean {

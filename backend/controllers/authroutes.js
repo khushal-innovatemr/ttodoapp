@@ -135,6 +135,63 @@ router.delete('/login/delete/:id', verify, async (req, res) => {
     }
 });
 
+router.get('/hello', async (req, res) => {
+    console.log("lasdasdadsadddddddddddddddddddddddddddddddddd")
+    try {
+      const tasks = await Todo.aggregate([
+        {
+          $group: {
+            _id: "$userId",
+            completed: {
+              $first: "$completed",
+            },
+            tasks: {
+              $push: {
+                _id: "$_id",
+                completed: "$completed",
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            completedCount: {
+              $size: {
+                $filter: {
+                  input: "$tasks",
+                  as: "task",
+                  cond: {
+                    $eq: ["$$task.completed", true],
+                  },
+                },
+              },
+            },
+            pendingCount: {
+              $size: {
+                $filter: {
+                  input: "$tasks",
+                  as: "task",
+                  cond: {
+                    $eq: ["$$task.completed", false],
+                  },  
+                },
+              },
+            },
+            userId: 1,
+          },
+        },
+      ]
+    );
+      console.log(tasks);
+      res.send(tasks);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(400).send("Task not Counted");
+    }
+  });
+
+
+
 router.post('/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {

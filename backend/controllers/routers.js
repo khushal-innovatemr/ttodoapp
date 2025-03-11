@@ -5,6 +5,8 @@ const db = require('../dbconfig');
 const verify = require('../middleware/auth');
 const role_middleware = require('../middleware/role_auth');
 const router = express.Router();
+const app = express();
+app.use(express.json())
 
 db;
 

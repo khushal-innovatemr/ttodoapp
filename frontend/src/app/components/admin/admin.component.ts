@@ -33,10 +33,24 @@ export class AdminComponent {
   constructor(private authService: AuthService,private todo:TodoService, private router: Router) {}
 
   ngOnInit(): void {
+    this.getUserEmail();
   }
 
   @Output() ViewUser:EventEmitter<any> = new EventEmitter();
 
+  getUserEmail(): void {
+    const token = this.authService.getToken();
+    if (token) {
+      try {
+        const tokenData = JSON.parse(atob(token.split('.')[1]));
+        this.email = tokenData.email || 'User';
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        this.email = 'User';
+      }
+    }
+  }
+  
   AddUser(): void {
     this.authService.AddUser(this.email, this.password, this.role).subscribe({
       next: () => {
