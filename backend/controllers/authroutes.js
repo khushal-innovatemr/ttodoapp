@@ -135,62 +135,63 @@ router.delete('/login/delete/:id', verify, async (req, res) => {
     }
 });
 
-router.get('/hello', async (req, res) => {
-    console.log("lasdasdadsadddddddddddddddddddddddddddddddddd")
-    try {
-      const tasks = await Todo.aggregate([
-        {
-          $group: {
-            _id: "$userId",
-            completed: {
-              $first: "$completed",
-            },
-            tasks: {
-              $push: {
-                _id: "$_id",
-                completed: "$completed",
-              },
+router.get('/hello/:id', async (req, res) => {
+  const userId = req.params.id;
+  console.log("Fetching tasks for user ID:", userId);
+
+  try {
+    const tasks = await Todo.aggregate([
+      {
+        $match: { userId: userId }  // Filter tasks by userId
+      },
+      {
+        $group: {
+          _id: "$userId",
+          tasks: {
+            $push: {
+              _id: "$_id",
+              completed: "$completed",
             },
           },
         },
-        {
-          $project: {
-            completedCount: {
-              $size: {
-                $filter: {
-                  input: "$tasks",
-                  as: "task",
-                  cond: {
-                    $eq: ["$$task.completed", true],
-                  },
+      },
+      {
+        $project: {
+          completedCount: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond: {
+                  $eq: ["$$task.completed", true],
                 },
               },
             },
-            pendingCount: {
-              $size: {
-                $filter: {
-                  input: "$tasks",
-                  as: "task",
-                  cond: {
-                    $eq: ["$$task.completed", false],
-                  },  
-                },
-              },
-            },
-            userId: 1,
           },
+          pendingCount: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond: {
+                  $eq: ["$$task.completed", false],
+                },
+              },
+            },
+          },
+          _id: 0,  // Exclude the _id field from the output
+          userId: "$_id",  // Rename _id to userId in the output
         },
-      ]
-    );
-      console.log(tasks);
-      res.send(tasks);
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(400).send("Task not Counted");
-    }
-  });
+      },
+    ]);
 
-
+    console.log(tasks);
+    res.send(tasks);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(400).send("Task not Counted");
+  }
+});
 
 router.post('/logout', (req, res) => {
     req.session.destroy(err => {
