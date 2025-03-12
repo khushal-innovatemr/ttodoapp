@@ -49,7 +49,15 @@ export class AuthService {
   }
 
   get_count(): Observable<any> {
-    return this.http.get(`${this.API_URL}/hello`);
+    return this.http.get(`${this.API_URL}/hello`,this.header_options);
+  }
+
+  completed_count():Observable<any> {
+    return this.http.get(`${this.API_URL}/completed`,this.header_options);
+  }
+
+  pending_count():Observable<any> {
+    return this.http.get(`${this.API_URL}/pending`,this.header_options);
   }
 
   isAuthenticated(): boolean {

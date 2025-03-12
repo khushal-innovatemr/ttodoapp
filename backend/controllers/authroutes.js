@@ -8,9 +8,14 @@ const Todo = require('../models');
 const router = express.Router();
 const verify = require('../middleware/auth');
 const cookieParser = require("cookie-parser");
+const session = require('express-session');
 const app = express();
 
-const session = require('express-session');
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 router.use(session({
   secret: process.env.SESSION_SECRET || 'your_session_secret',
@@ -54,14 +59,14 @@ router.post('/login', async (req, res) => {
         res.cookie('userId', user.id, { 
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000, 
-            secure: process.env.NODE_ENV === 'production', 
+            // secure: process.env.NODE_ENV === 'production', 
             sameSite: 'strict' 
           }).send({
             message: "Logged in successfully",
             token: token,
             role:user.role,
         });
-        // console.log("cookies",req.cookies)
+        console.log("cookies",req.cookies)
         
     } catch (err) {
         console.error("Login error:", err);
@@ -135,15 +140,64 @@ router.delete('/login/delete/:id', verify, async (req, res) => {
     }
 });
 
-router.get('/hello/:id', async (req, res) => {
-  const userId = req.params.id;
-  console.log("Fetching tasks for user ID:", userId);
+router.get('/completed', async (req, res) => {
+  try {
+    const task = await Todo.aggregate([
+      {
+        $match: {
+          completed: true,
+        },
+      },
+      {
+        $count: "completed_tasks",
+      },
+      {
+        $project: {
+          completedCount: "$completed_tasks",
+          _id: 0,
+        },
+      },
+    ]);
+    res.send(task);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(400).send("Task not Counted");
+  }
+});
 
+router.get('/pending', async (req, res) => {
+  try {
+    const task = await Todo.aggregate([
+      {
+        $match: {
+          completed: false,
+        },
+      },
+      {
+        $count: "pending_tasks",
+      },
+      {
+        $project: {
+          pendingCount: "$pending_tasks",
+          _id: 0,
+        },
+      },
+    ]);
+    res.send(task);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
+
+
+router.get('/hello', async (req, res) => {
+  
+  const Id  = req.cookies.userId;
+  console.log("Fetching tasks for user ID:",Id);
+   
   try {
     const tasks = await Todo.aggregate([
-      {
-        $match: { userId: userId }  // Filter tasks by userId
-      },
       {
         $group: {
           _id: "$userId",
@@ -179,14 +233,15 @@ router.get('/hello/:id', async (req, res) => {
               },
             },
           },
-          _id: 0,  // Exclude the _id field from the output
-          userId: "$_id",  // Rename _id to userId in the output
+          _id: 0,  
+          userId: "$_id",
         },
       },
     ]);
 
-    console.log(tasks);
-    res.send(tasks);
+    const user_tasks =tasks.filter((u) => u.userId === Id);
+    res.send(user_tasks);
+
   } catch (error) {
     console.error("Error:", error);
     res.status(400).send("Task not Counted");

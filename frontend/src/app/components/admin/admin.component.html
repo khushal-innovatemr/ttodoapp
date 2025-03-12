@@ -53,6 +53,39 @@
 </div>
 <!-- {{showTasks}} -->
 
+<button (click)="completed()" class="pl-5 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300 mt-10 mb-9">
+    {{ comp ? 'Hide Count' : 'Show Count' }}    
+</button>
+
+@if (comp||pend) {
+    <div class="mt-4 p-6 bg-white shadow-md rounded-lg border border-gray-300 w-80 mx-auto absolute left-4">
+        <h3 class="text-xl font-bold text-gray-700 mb-3 text-center">📌 Task Summary</h3>
+        <div class="flex justify-between items-center border-b pb-2 mb-2">
+            <p class="text-green-600 font-semibold text-lg">✅ Completed Tasks:</p>
+            <p class="text-gray-700 text-lg font-bold">{{ completed_task[0].completedCount }}</p>
+        </div>
+        <div class="flex justify-between items-center border-b pb-2 mb-2">
+            <p class="text-green-600 font-semibold text-lg">⏳ Pending Tasks:</p>
+            <p class="text-gray-700 text-lg font-bold">{{ pending_task[0].pendingCount }}</p>
+        </div>
+
+    </div>
+}
+
+<button (click)="pending()" class="pl-5 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300 mt-10 mb-9">
+    {{ pend ? 'Hide' : 'Show' }}    
+</button>
+
+@if (pend) {
+    <div class="mt-4 p-6 bg-white shadow-md rounded-lg border border-gray-300 w-80 mx-auto absolute left-4">
+        <h3 class="text-xl font-bold text-gray-700 mb-3 text-center">📌 Task Summary</h3>
+        <div class="flex justify-between items-center border-b pb-2 mb-2">
+            <p class="text-green-600 font-semibold text-lg">⏳ Pending Tasks:</p>
+            <p class="text-gray-700 text-lg font-bold">{{ pending_task[0].pendingCount }}</p>
+        </div>
+    </div>
+}
+
 @if (showTasks) {
     <div class="max-w-4xl mx-auto my-5">
         <div class="text-2xl font-semibold text-center p-3 bg-blue-50 rounded-lg shadow">

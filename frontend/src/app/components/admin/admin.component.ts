@@ -28,6 +28,15 @@ export class AdminComponent {
   showTasks = false;
   currentUserId: string = '';
   user: any = [];
+  countTask:any;
+  comp:boolean = false;
+  pend:boolean = false;
+  completed_task:any;
+  pending_task:any;
+  showTodoList: boolean = false;
+  showTask:boolean = false;
+  id:any;
+  
 
 
   constructor(private authService: AuthService,private todo:TodoService, private router: Router) {}
@@ -51,6 +60,37 @@ export class AdminComponent {
     }
   }
   
+  completed(): void {
+    this.comp = !this.comp;
+    if (this.comp) {
+      this.authService.completed_count().subscribe({
+        next: (res: any) => {
+          this.completed_task = res;
+          console.log(res);
+        },
+        error: (error: any) => {
+          console.error('Error Fetching Tasks', error);
+        }
+      });
+    }
+  }
+  
+  pending(): void {
+    this.pend = !this.pend;
+    if (this.pend) {
+      this.authService.pending_count().subscribe({
+        next: (res: any) => {
+          this.pending_task = res;
+          console.log(res);
+        },
+        error: (error: any) => {
+          console.error('Error Fetching Tasks', error);
+        }
+      });
+    }
+  }
+
+
   AddUser(): void {
     this.authService.AddUser(this.email, this.password, this.role).subscribe({
       next: () => {

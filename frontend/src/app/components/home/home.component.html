@@ -9,7 +9,7 @@ mt-5">
     </div>
   
     <!--show Todo List Button -->
-    <div class="flex justify-center my-9 absolute left-10">
+    <div class="flex justify-center my-9 absolute right-5">
         <button (click)="toggleTodoList()" 
         class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300">
         {{ showTodoList ? 'Hide TodoList' : 'View TodoList' }}
@@ -17,16 +17,29 @@ mt-5">
     <br>
 </div>
 
-<button (click)="taskcount()" class="pl-5 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300">
-    Tasks    
+<button (click)="taskcount()" class="pl-5 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300 mt-10 mb-9">
+    {{ showTask ? 'Hide Count' : 'Show Count' }}    
 </button>
-<pre>{{ countTask | json }}</pre>
+
+@if (showTask) {
+    <div class="mt-4 p-6 bg-white shadow-md rounded-lg border border-gray-300 w-80 mx-auto absolute left-4">
+        <h3 class="text-xl font-bold text-gray-700 mb-3 text-center">📌 Task Summary</h3>
+        <div class="flex justify-between items-center border-b pb-2 mb-2">
+            <p class="text-green-600 font-semibold text-lg">✅ Completed Tasks:</p>
+            <p class="text-gray-700 text-lg font-bold">{{ countTask[0].completedCount }}</p>
+        </div>
+        <div class="flex justify-between items-center">
+            <p class="text-red-600 font-semibold text-lg">⏳ Pending Tasks:</p>
+            <p class="text-gray-700 text-lg font-bold">{{ countTask[0].pendingCount }}</p>
+        </div>
+    </div>
+}
     
     @if (showTodoList) {
-    <app-todo-add (todoAdd)="addTask($event)"></app-todo-add>
+            <app-todo-add (todoAdd)="addTask($event)"></app-todo-add>
   
     <div class="max-w-4xl flex flex-col md:flex-row mx-auto">
-        <div class="flex flex-col my-3 p-5 m-3 rounded-lg bg-white-100 shadow-xl md:w-2/4 transition-all duration-300 hover:bg-blue-200">
+        <div class="flex flex-col my-3 p-5 m-3 rounded-lg bg-blue-200 shadow-xl md:w-2/4 transition-all duration-300 hover:bg-blue-300">
             <p class="font-semibold text-xl text-black">Todo</p>
   
             <ul class="flex flex-col space-y-3">
@@ -75,7 +88,7 @@ mt-5">
             </ul>
         </div>
   
-        <div class="flex flex-col my-3 p-5 m-3 rounded-lg bg-white shadow-xl md:w-2/4 transition-all duration-300 hover:bg-green-100">
+        <div class="flex flex-col my-3 p-5 m-3 rounded-lg bg-green-100 shadow-xl md:w-2/4 transition-all duration-300 hover:bg-green-200">
             <p class="font-semibold text-xl text-black">Completed</p>
             <ul class="flex flex-col space-y-3">
                 @for (task of tasks; track task.id) {

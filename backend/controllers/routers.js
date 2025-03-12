@@ -61,14 +61,13 @@ router.post('/', verify, role_middleware(["admin", "manager", "user"]), async (r
 
 router.put("/:id", verify,role_middleware(["manager","admin","user"]),async (req, res) => {
     try {
-        const userId = req.user.id;
         const id = req.params.id;
         const { name, description, completed, deadline } = req.body;
 
         console.log(name + " " + id);
 
         const updatedTask = await Todo.findOneAndUpdate(
-            { id: id, userId: userId },
+            { id: id},
             {
                 name,
                 description,

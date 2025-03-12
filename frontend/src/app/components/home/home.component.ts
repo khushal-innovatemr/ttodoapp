@@ -18,8 +18,12 @@ export class HomeComponent implements OnInit {
   edit: boolean = false;
   editTask: any = {};
   countTask:any;
+  completed_task:any;
+  pending_task:any;
   email: any = '';
   showTodoList: boolean = false;
+  showTask:boolean = false;
+  id:any;
   
   constructor(
     private todo: TodoService,
@@ -35,18 +39,52 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
-
+  
   taskcount(): void {
-    this.authService.get_count().subscribe({
-      next: (res: any) => {
-        this.countTask = res;
-        console.log(res);
-      },
-      error: (error: any) => {
-        console.error('Error Fetching Tasks', error);
-      }
-    });
+    this.showTask = !this.showTask;
+    if (this.showTask) {
+      this.authService.get_count().subscribe({
+        next: (res: any) => {
+          this.countTask = res;
+          console.log(res);
+        },
+        error: (error: any) => {
+          console.error('Error Fetching Tasks', error);
+        }
+      });
+    }
   }
+
+  completed(): void {
+    this.showTask = !this.showTask;
+    if (this.showTask) {
+      this.authService.get_count().subscribe({
+        next: (res: any) => {
+          this.completed_task = res;
+          console.log(res);
+        },
+        error: (error: any) => {
+          console.error('Error Fetching Tasks', error);
+        }
+      });
+    }
+  }
+
+  pending(): void {
+    this.showTask = !this.showTask;
+    if (this.showTask) {
+      this.authService.get_count().subscribe({
+        next: (res: any) => {
+          this.pending_task = res;
+          console.log(res);
+        },
+        error: (error: any) => {
+          console.error('Error Fetching Tasks', error);
+        }
+      });
+    }
+  }
+
 
   getUserEmail(): void {
     const token = this.authService.getToken();
@@ -142,6 +180,8 @@ export class HomeComponent implements OnInit {
   toggleTodoList(): void {
     this.showTodoList = !this.showTodoList;
   }
+
+
 
   logout(): void {
     this.authService.logout();
