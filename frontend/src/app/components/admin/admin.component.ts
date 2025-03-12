@@ -74,21 +74,7 @@ export class AdminComponent {
       });
     }
   }
-  
-  pending(): void {
-    this.pend = !this.pend;
-    if (this.pend) {
-      this.authService.pending_count().subscribe({
-        next: (res: any) => {
-          this.pending_task = res;
-          console.log(res);
-        },
-        error: (error: any) => {
-          console.error('Error Fetching Tasks', error);
-        }
-      });
-    }
-  }
+
 
 
   AddUser(): void {

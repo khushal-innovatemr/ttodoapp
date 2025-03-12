@@ -144,17 +144,33 @@ router.get('/completed', async (req, res) => {
   try {
     const task = await Todo.aggregate([
       {
-        $match: {
-          completed: true,
+        $facet: {
+          completedTasks: [
+            {
+              $match: {
+                completed: true,
+              },
+            },
+            {
+              $count: "completedCount",
+            },
+          ],
+          pendingTasks: [
+            {
+              $match: {
+                completed: false,
+              },
+            },
+            {
+              $count: "pendingCount",
+            },
+          ],
         },
       },
       {
-        $count: "completed_tasks",
-      },
-      {
         $project: {
-          completedCount: "$completed_tasks",
-          _id: 0,
+          completedCount: { $arrayElemAt: ["$completedTasks.completedCount", 0] },
+          pendingCount: { $arrayElemAt: ["$pendingTasks.pendingCount", 0] },
         },
       },
     ]);
@@ -164,32 +180,6 @@ router.get('/completed', async (req, res) => {
     res.status(400).send("Task not Counted");
   }
 });
-
-router.get('/pending', async (req, res) => {
-  try {
-    const task = await Todo.aggregate([
-      {
-        $match: {
-          completed: false,
-        },
-      },
-      {
-        $count: "pending_tasks",
-      },
-      {
-        $project: {
-          pendingCount: "$pending_tasks",
-          _id: 0,
-        },
-      },
-    ]);
-    res.send(task);
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-});
-
-
 
 router.get('/hello', async (req, res) => {
   

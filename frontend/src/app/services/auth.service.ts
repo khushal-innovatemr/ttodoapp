@@ -56,10 +56,6 @@ export class AuthService {
     return this.http.get(`${this.API_URL}/completed`,this.header_options);
   }
 
-  pending_count():Observable<any> {
-    return this.http.get(`${this.API_URL}/pending`,this.header_options);
-  }
-
   isAuthenticated(): boolean {
     if (typeof window !== 'undefined') {
       return !!localStorage.getItem('token');
