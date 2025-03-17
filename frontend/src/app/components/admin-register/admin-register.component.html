@@ -1,0 +1,42 @@
+<div *ngIf="successMessage" class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
+    {{ successMessage }}
+  </div>
+  
+  <div class="max-w-md md:max-w-lg lg:max-w-xl mx-auto m-3 p-2 rounded-md bg-blue-100 flex flex-col justify-evenly">
+    <h2 class="font-semibold text-black text-center">Register</h2>
+    
+    <form (ngSubmit)="register()" class="flex flex-col">
+      <input 
+        type="email" 
+        [(ngModel)]="email" 
+        name="email" 
+        placeholder="Email" 
+        required 
+        class="p-2 rounded-md font-semibold text-black my-2" />
+  
+      <input 
+        type="password" 
+        [(ngModel)]="password" 
+        name="password" 
+        placeholder="Password" 
+        required 
+        class="p-2 rounded-md font-semibold text-black my-2" />
+  
+      <label for="role" class="rounded-md text-black flex-col">Choose Your Role</label>
+      <select [(ngModel)]="role" name="role" class="rounded-md font-semibold text-black flex-col">
+          <!-- <option value="admin">admin</option> -->
+          <option value="manager">manager</option>
+          <option value="user">user</option> 
+      </select>
+  
+      <button 
+        type="submit" 
+        class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2">
+        Register
+      </button>
+    </form>
+  
+    <!-- Error Message -->
+    <p *ngIf="errorMessage" class="text-red-500 text-center mt-2">{{ errorMessage }}</p>
+  
+  </div>

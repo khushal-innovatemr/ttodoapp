@@ -66,7 +66,7 @@ export class AuthService {
   getCurrentUser() {
     return { role: 'user' }; 
   }
-
+  
   IsNotAdmin(): boolean {
     const user = this.getCurrentUser();
     return user.role !== 'admin';

@@ -5,16 +5,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-register',
-  standalone: true, 
-  imports: [CommonModule, FormsModule, RouterLink], 
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  selector: 'app-admin-register',
+  standalone: true,
+  imports: [CommonModule, FormsModule], 
+  templateUrl: './admin-register.component.html',
+  styleUrl: './admin-register.component.css'
 })
-export class RegisterComponent {
+export class AdminRegisterComponent {
   email = '';
   password = '';
-  role = ''; 
+  role = '';
   errorMessage = '';
   successMessage = '';
 
@@ -25,13 +25,13 @@ export class RegisterComponent {
       next: (v) => {
         console.log(v);
         
-        this.successMessage = 'User Saved!';
+        this.successMessage = 'User Created!';
         
         setTimeout(() => {
-          this.successMessage = 'Redirecting to login page...';
+          this.successMessage = 'Redirecting to Admin..';
           
           setTimeout(() => {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/admin']);
           }, 2000);
           
         }, 3000);

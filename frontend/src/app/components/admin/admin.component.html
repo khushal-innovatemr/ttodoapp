@@ -2,7 +2,11 @@
 mt-5">
     Welcome, {{ email |titlecase }}
 </div>
-<a [routerLink]="['/register']" [queryParams]="{ redirect: '/admin' }">Register</a>
+
+<button (click)="adminregister()" class="bg-green-500 hover:bg-green-700 p-3 rounded-lg text-white font-semibold shadow-lg">
+    Create User
+</button>   
+
 <div>
     <div class="text-3xl font-semibold max-w-sm mx-auto bg-blue-50 text-center p-3 rounded-lg mt-2
     hover:bg-blue-600 hover:text-white transition duration-300 ease-in-out my-5 shadow-lg ab">
@@ -11,6 +15,7 @@ mt-5">
         {{ comp ? 'Hide Count' : 'Show Count' }}    
     </button>
 </div>
+
 
 
 <div class="max-w-4xl flex flex-col md:flex-row mx-auto">

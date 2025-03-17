@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
   pending_task:any;
   email: any = '';
   showTodoList: boolean = false;
+  showForm:boolean = false;
   showTask:boolean = false;
   id:any;
   
@@ -179,6 +180,10 @@ export class HomeComponent implements OnInit {
 
   toggleTodoList(): void {
     this.showTodoList = !this.showTodoList;
+  }
+
+  toggleform():void {
+    this.showForm = !this.showForm;
   }
 
 

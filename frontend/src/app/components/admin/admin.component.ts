@@ -47,6 +47,10 @@ export class AdminComponent {
 
   @Output() ViewUser:EventEmitter<any> = new EventEmitter();
 
+  adminregister(): void {
+    this.router.navigate(['/admin-create']);
+  }
+
   getUserEmail(): void {
     const token = this.authService.getToken();
     if (token) {
@@ -212,10 +216,8 @@ SeeUserTasks(userId: string): void {
         error: (error: any) => {
             console.error('Error Deleting User:', error);
         }
-    });
+    }); 
 }
-
- 
 
 
   handleEdit(task: any): void {

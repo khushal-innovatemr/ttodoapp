@@ -16,13 +16,24 @@ mt-5">
     </button>
     <br>
 </div>
+    
+
+
+@if(showForm){
+    <app-todo-add (todoAdd)="addTask($event)"></app-todo-add>
+}
 
 <button (click)="taskcount()" class="pl-5 bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300 mt-10 mb-9">
     {{ showTask ? 'Hide Count' : 'Show Count' }}    
 </button>
 
+<button (click)="toggleform()"
+    class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300 mt-10 mb-9">
+    {{showForm ? 'Hide Form':'Show Form'}}
+</button>
+
 @if (showTask) {
-    <div class="mt-4 p-6 bg-white shadow-md rounded-lg border border-gray-300 w-80 mx-auto absolute left-4">
+    <div class="mt-4 p-6 bg-blue-100 shadow-md rounded-lg border border-gray-300 w-80 mx-auto absolute left-4">
         <h3 class="text-xl font-bold text-gray-700 mb-3 text-center">📌 Task Summary</h3>
         <div class="flex justify-between items-center border-b pb-2 mb-2">
             <p class="text-green-600 font-semibold text-lg">✅ Completed Tasks:</p>
@@ -36,8 +47,6 @@ mt-5">
 }
     
     @if (showTodoList) {
-            <app-todo-add (todoAdd)="addTask($event)"></app-todo-add>
-  
     <div class="max-w-4xl flex flex-col md:flex-row mx-auto">
         <div class="flex flex-col my-3 p-5 m-3 rounded-lg bg-blue-200 shadow-xl md:w-2/4 transition-all duration-300 hover:bg-blue-300">
             <p class="font-semibold text-xl text-black">Todo</p>
