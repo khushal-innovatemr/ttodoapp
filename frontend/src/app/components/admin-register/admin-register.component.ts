@@ -17,6 +17,7 @@ export class AdminRegisterComponent {
   role = '';
   errorMessage = '';
   successMessage = '';
+  createdBy: any;
 
   constructor(private authService: AuthService, private router: Router) {}
 

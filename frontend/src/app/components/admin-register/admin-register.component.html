@@ -28,7 +28,16 @@
           <option value="manager">manager</option>
           <option value="user">user</option> 
       </select>
-  
+      
+      <input 
+      type="createdby" 
+      [(ngModel)]="createdBy" 
+      name="createdby" 
+      placeholder="createdby" 
+      required 
+      class="p-2 rounded-md font-semibold text-black my-2" />
+
+
       <button 
         type="submit" 
         class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2">
