@@ -82,8 +82,28 @@ router.post('/register', async (req, res) => {
 });
 
 
+router.post('/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email, otp });
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid OTP' });
+    }
+
+    const token = jwt.sign({ name: user.name, id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "24h" });
+
+    res.cookie('userId', user.id, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
+      .send({ message: "Logged in successfully", token, role: user.role });
+  } catch (error) {
+    console.error("OTP Verification error:", error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
+
 router.post('/login', async (req, res) => {
-    const {email, password } = req.body;
+    const {email, password,otp } = req.body;
     try {
         let user = await User.findOne({ email });
         if (!user) return res.status(400).json({ error: "User not found" });
@@ -92,7 +112,13 @@ router.post('/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
         const token = jwt.sign({name:user.name, id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: "24h" });
-        
+        const otp_verify = await User.findOne({email,otp}).exec();
+        if(otp_verify){
+          res.status(200).send('OTP verified successfully');
+        } else {
+            res.status(400).send('Invalid OTP');
+        }
+
         res.cookie('userId', user.id, { 
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000, 
@@ -103,6 +129,7 @@ router.post('/login', async (req, res) => {
             token: token,
             role:user.role,
         });
+
         console.log("cookies",req.cookies)
         
     } catch (err) {

@@ -26,6 +26,10 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/register`, {name, email, password, role, createdby}, this.header_options);
   }
 
+  verifyOtp(email: string, otp: string): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/verify-otp`, { email, otp });
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
