@@ -30,6 +30,12 @@
         <option value="user">user</option> 
     </select>
 
+    <label for = "createdby" class = "rounded-md text-black flex-col">created</label>
+    <select [(ngModel)]="createdby" name = "createdby" class = "rounded-md font-semibold text-black flex-col">
+      <option value="self">Self</option>
+      <option value="admin">Admin</option>
+    </select>
+
     <button 
       type="submit" 
       class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2">

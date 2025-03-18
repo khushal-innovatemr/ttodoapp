@@ -17,12 +17,12 @@ export class AdminRegisterComponent {
   role = '';
   errorMessage = '';
   successMessage = '';
-  createdBy: any;
+  createdby = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
   register(): void {
-    this.authService.register(this.email, this.password,this.role).subscribe({
+    this.authService.register(this.email, this.password,this.role,this.createdby).subscribe({
       next: (v) => {
         console.log(v);
         

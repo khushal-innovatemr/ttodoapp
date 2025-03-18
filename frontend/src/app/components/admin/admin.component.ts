@@ -16,6 +16,7 @@ export class AdminComponent {
   email = '';
   password = '';
   role:any = '';
+  createdby:any = '';
   tasks:any = [];
   edit: boolean = false;
   editTask: any = {};
@@ -82,7 +83,7 @@ export class AdminComponent {
 
 
   AddUser(): void {
-    this.authService.AddUser(this.email, this.password, this.role).subscribe({
+    this.authService.AddUser(this.email, this.password, this.role,this.createdby).subscribe({
       next: () => {
         this.successMessage = 'User Saved!';
         setTimeout(() => {

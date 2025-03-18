@@ -22,8 +22,8 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/login`, { email, password}, this.header_options);
   }
 
-  register(email: string, password: string, role: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/register`, { email, password, role}, this.header_options);
+  register(email: string, password: string, role: string, createdby:string): Observable<any> {
+    return this.http.post(`${this.API_URL}/register`, { email, password, role, createdby}, this.header_options);
   }
 
   logout(): void {
@@ -31,8 +31,8 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  AddUser(email: string, password: string, role: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/login/add`, { email, password, role });
+  AddUser(email: string, password: string, role: string, createdby:string): Observable<any> {
+    return this.http.post(`${this.API_URL}/login/add`, { email, password, role, createdby });
   }
 
   getUsers(): Observable<any> {

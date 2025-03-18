@@ -29,14 +29,12 @@
           <option value="user">user</option> 
       </select>
       
-      <input 
-      type="createdby" 
-      [(ngModel)]="createdBy" 
-      name="createdby" 
-      placeholder="createdby" 
-      required 
-      class="p-2 rounded-md font-semibold text-black my-2" />
-
+      <label for="createdby" class="rounded-md text-black flex-col">Choose Your Role</label>
+      <select [(ngModel)]="createdby" name="createdby" class="rounded-md font-semibold text-black flex-col">
+          <!-- <option value="admin">admin</option> -->
+          <option value="self">Self</option>
+          <option value="admin">Admin</option> 
+      </select>
 
       <button 
         type="submit" 

@@ -26,7 +26,7 @@ router.use(session({
 
 
 router.post('/register', async (req, res) => {
-    const { email, password, role } = req.body;
+    const { email, password, role, createdby } = req.body;
     const userId = uuidv4();
 
     try {
@@ -34,7 +34,7 @@ router.post('/register', async (req, res) => {
         if (user) return res.status(400).send({ error: "User already exists!" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        user = new User({ email, password: hashedPassword, id: userId, role: role || "user" });
+        user = new User({ email, password: hashedPassword, id: userId, role: role || "user", createdby });
         await user.save();
         
         return res.send({ message: "User registered successfully"});
@@ -88,7 +88,7 @@ router.post('/login/add', verify, async (req, res) => {
 router.get('/login/users', verify, async (req, res) => {
     if (req.user.role === 'admin') {
         try {
-            const users = await User.find({ role: { $in: ['user', 'manager'] } }, 'id email role');
+            const users = await User.find({ role: { $in: ['user', 'manager'] } }, 'id email role createdby');
             return res.send(users);
         } catch (err) {
             console.error("Fetching users error:", err);
