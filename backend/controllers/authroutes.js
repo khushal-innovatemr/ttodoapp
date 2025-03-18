@@ -9,8 +9,43 @@ const router = express.Router();
 const verify = require('../middleware/auth');
 const cookieParser = require("cookie-parser");
 const session = require('express-session');
+const otpGenerator = require('otp-generator');
 const app = express();
 
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail', 
+  auth: {
+      user: process.env.EMAIL_USER, 
+      pass: process.env.EMAIL_PASS,
+}});
+
+transporter.verify((error, success) => {
+  if (error) {
+      console.log("SMTP Connection Error:", error);
+  } else {
+      console.log("SMTP Ready:", success);
+  }
+})
+
+const sendWelcomeEmail = async (email,name) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Welcome to Our App!',
+    text: `Hi,${name}
+    \nThank you for signing in Just Belive in us and you will exceed!
+    \n Your OTP is ${otp}`
+  };
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Welcome email sent to:', email);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+
+}
 
 app.use(cookieParser());
 app.use(express.json());
@@ -24,10 +59,10 @@ router.use(session({
   cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true }
 }));
 
-
 router.post('/register', async (req, res) => {
     const {name, email, password, role, createdby } = req.body;
     const userId = uuidv4();
+    const otp = otpGenerator.generate(6,{digits: true,aplhabets:false,upperCase:false,specialChars:false})
 
     try {
         let user = await User.findOne({ email });
@@ -36,7 +71,8 @@ router.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         user = new User({name, email, password: hashedPassword, id: userId, role: role || "user", createdby });
         await user.save();
-        
+        await User.create({email,otp});
+        sendWelcomeEmail(email,name);
         return res.send({ message: "User registered successfully"});
         
     } catch (err) {
