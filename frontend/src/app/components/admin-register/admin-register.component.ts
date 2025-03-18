@@ -12,17 +12,18 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './admin-register.component.css'
 })
 export class AdminRegisterComponent {
+  name = '';
   email = '';
   password = '';
   role = '';
   errorMessage = '';
   successMessage = '';
-  createdby = '';
+  createdby = ''; 
 
   constructor(private authService: AuthService, private router: Router) {}
 
   register(): void {
-    this.authService.register(this.email, this.password,this.role,this.createdby).subscribe({
+    this.authService.register(this.name,this.email, this.password,this.role,this.createdby).subscribe({
       next: (v) => {
         console.log(v);
         

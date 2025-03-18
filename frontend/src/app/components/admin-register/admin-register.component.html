@@ -5,24 +5,43 @@
   <div class="max-w-md md:max-w-lg lg:max-w-xl mx-auto m-3 p-2 rounded-md bg-blue-100 flex flex-col justify-evenly">
     <h2 class="font-semibold text-black text-center">Register</h2>
     
-    <form (ngSubmit)="register()" class="flex flex-col">
+    <form  #templateform="ngForm" (ngSubmit)="register()" class="flex flex-col">
+
+      <input 
+      type="name" 
+      [(ngModel)]="name" 
+      name="name" 
+      placeholder="Name" 
+      required 
+      class="p-2 rounded-md font-semibold text-black my-2" />
+
       <input 
         type="email" 
         [(ngModel)]="email" 
         name="email" 
         placeholder="Email" 
         required 
-        class="p-2 rounded-md font-semibold text-black my-2" />
+        email
+        class="p-2 rounded-md font-semibold text-black my-2"
+        #mail = "ngModel"/>
   
+      <h5 class="text-red-500" *ngIf="mail.invalid && mail.touched">Please enter correct email</h5>
+
       <input 
         type="password" 
         [(ngModel)]="password" 
         name="password" 
         placeholder="Password" 
-        required 
-        class="p-2 rounded-md font-semibold text-black my-2" />
-  
-      <label for="role" class="flex flex-col font-bold text-blue-600">Choose User's Role</label>
+        required
+        pattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])' 
+        password
+        class="p-2 rounded-md font-semibold text-black my-2" 
+        #pass="ngModel"/>
+      
+      <h5 class="text-red-500" *ngIf="pass.invalid && pass.touched">password must have one uppercase,one lowercase and length should be greater than 6</h5>
+
+
+      <label for="role" class="flex flex-col font-bold text-blue-600">Choose Your Role</label>
       <select [(ngModel)]="role" name="role" class="p-2 rounded-md font-semibold text-black my-2">
           <!-- <option value="admin">admin</option> -->
           <option value="manager">manager</option>
@@ -37,7 +56,8 @@
 
       <button 
         type="submit" 
-        class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2">
+        class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2"
+        [disabled]="templateform.invalid">
         Register
       </button>
     </form>

@@ -26,7 +26,7 @@ router.use(session({
 
 
 router.post('/register', async (req, res) => {
-    const { email, password, role, createdby } = req.body;
+    const {name, email, password, role, createdby } = req.body;
     const userId = uuidv4();
 
     try {
@@ -34,7 +34,7 @@ router.post('/register', async (req, res) => {
         if (user) return res.status(400).send({ error: "User already exists!" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        user = new User({ email, password: hashedPassword, id: userId, role: role || "user", createdby });
+        user = new User({name, email, password: hashedPassword, id: userId, role: role || "user", createdby });
         await user.save();
         
         return res.send({ message: "User registered successfully"});
@@ -47,7 +47,7 @@ router.post('/register', async (req, res) => {
 
 
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const {email, password } = req.body;
     try {
         let user = await User.findOne({ email });
         if (!user) return res.status(400).json({ error: "User not found" });
@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: "24h" });
+        const token = jwt.sign({name:user.name, id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: "24h" });
         
         res.cookie('userId', user.id, { 
             httpOnly: true,
@@ -88,7 +88,7 @@ router.post('/login/add', verify, async (req, res) => {
 router.get('/login/users', verify, async (req, res) => {
     if (req.user.role === 'admin') {
         try {
-            const users = await User.find({ role: { $in: ['user', 'manager'] } }, 'id email role createdby');
+            const users = await User.find({ role: { $in: ['user', 'manager'] } }, 'name id email role createdby');
             return res.send(users);
         } catch (err) {
             console.error("Fetching users error:", err);

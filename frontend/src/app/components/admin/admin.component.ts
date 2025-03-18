@@ -13,6 +13,7 @@ import { TodoService } from '../../services/todo.service';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent {
+  name = '';
   email = '';
   password = '';
   role:any = '';
@@ -57,10 +58,10 @@ export class AdminComponent {
     if (token) {
       try {
         const tokenData = JSON.parse(atob(token.split('.')[1]));
-        this.email = tokenData.email || 'User';
+        this.name = tokenData.name || 'User';
       } catch (error) {
         console.error('Error decoding token:', error);
-        this.email = 'User';
+        this.name = 'User';
       }
     }
   }
@@ -83,7 +84,7 @@ export class AdminComponent {
 
 
   AddUser(): void {
-    this.authService.AddUser(this.email, this.password, this.role,this.createdby).subscribe({
+    this.authService.AddUser(this.name,this.email, this.password, this.role,this.createdby).subscribe({
       next: () => {
         this.successMessage = 'User Saved!';
         setTimeout(() => {

@@ -12,7 +12,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  email = '';
+  name = '';
+  email:any = '';
   password = '';
   role = ''; 
   errorMessage = '';
@@ -22,17 +23,17 @@ export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   register(): void {
-    this.authService.register(this.email, this.password,this.role,this.createdby).subscribe({
+    this.authService.register(this.name,this.email, this.password,this.role,this.createdby).subscribe({
       next: (v) => {
         console.log(v);
         
-        this.successMessage = 'User Saved!';
+        this.successMessage = 'User Created!';
         
         setTimeout(() => {
-          this.successMessage = 'Redirecting to login page...';
+          this.successMessage = 'Redirecting to Admin..';
           
           setTimeout(() => {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/admin']);
           }, 2000);
           
         }, 3000);
