@@ -18,7 +18,7 @@ mt-5">
 
 
 
-<div class="max-w-4xl flex flex-col md:flex-row mx-auto">
+<div class="max-w-5xl flex flex-col md:flex-row mx-auto">
     <div class="flex flex-col my-3 p-5 m-3 rounded-lg bg-white shadow-xl md:w-2/4 hover:bg-blue-200">
         <ul class="flex flex-col space-y-3">
             <button (click)="CheckUser()" class="bg-green-500 hover:bg-green-700 p-3 rounded-lg text-white font-semibold shadow-lg">
@@ -29,7 +29,7 @@ mt-5">
                     <tr>
                         <th class="py-2 px-4 border-b">Email</th>
                         <th class="py-2 px-4 border-b">Role</th>
-                        <th class="py-2 px-4 border-b">created</th>
+                        <th class="py-2 px-4 border-b">Assigned By:</th>
                         <th class="py-2 px-4 border-b">Actions</th>
                         <th class="py-2 px-4 border-b">Delete</th>
                     </tr>
@@ -39,7 +39,7 @@ mt-5">
                         <tr class="hover:bg-blue-100 transition duration-300">
                             <td class="py-2 px-4 border-b">{{ task.email }}</td>
                             <td class="py-2 px-4 border-b">{{ task.role }}</td>
-                            <td class="py-2 px-4 border-b">{{task.createdby}}</td>
+                            <td class="py-2 px-3 border-b">{{task.createdby}}</td>
                             <td class="py-2 px-4 border-b">
                                 <button (click)="SeeUserTasks(task.id)"
                                     class="bg-blue-500 hover:bg-blue-700 text-white rounded">
