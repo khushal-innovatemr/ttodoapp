@@ -1,69 +1,81 @@
-<!-- Token Verified Message -->
-<div *ngIf="showTokenMessage" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
-  <p>Token Verified!!</p>
+<div *ngIf="showTokenMessage" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg z-50 transition-opacity duration-300">
+  <p class="flex items-center"><span class="mr-2">✓</span> Token Verified!</p>
 </div>
 
-<div class="max-w-md md:max-w-lg lg:max-w-xl mx-auto m-3 p-2 rounded-md bg-blue-100 flex flex-col justify-evenly">
-  <h2 class="font-semibold text-black text-center">Login</h2>
-
-  <form #templateform="ngForm" class="flex flex-col">
-    <!-- Email Input -->
-    <input 
-      type="email" 
-      [(ngModel)]="email" 
-      name="email" 
-      placeholder="Email" 
-      required 
-      class="p-2 rounded-md font-semibold text-black my-2" />
-
-    <!-- Password Input -->
-    <input 
-      type="password" 
-      [(ngModel)]="password" 
-      name="password" 
-      placeholder="Password" 
-      required 
-      class="p-2 rounded-md font-semibold text-black my-2" />
-
-    <!-- Generate OTP Button -->
+<div class="max-w-md md:max-w-lg lg:max-w-xl mx-auto my-8 p-6 rounded-lg bg-white shadow-lg border border-gray-200">
+  <h2 class="text-xl font-bold text-gray-800 text-center mb-6">Login</h2>
+  
+  <form #templateform="ngForm" class="flex flex-col space-y-4">
+    <div class="flex flex-col">
+      <label for="email" class="text-sm font-medium text-gray-700 mb-1">Email</label>
+      <input 
+        type="email" 
+        id="email"
+        [(ngModel)]="email" 
+        name="email" 
+        placeholder="Enter your email" 
+        required 
+        class="p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
+    </div>
+    
+    <div class="flex flex-col">
+      <label for="password" class="text-sm font-medium text-gray-700 mb-1">Password</label>
+      <input 
+        type="password"
+        id="password" 
+        [(ngModel)]="password" 
+        name="password" 
+        placeholder="Enter your password" 
+        required 
+        class="p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
+    </div>
+    
     <button type="button" (click)="GenerateOtp()" 
-      class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300">
+      class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-md shadow transition duration-200 active:bg-blue-700 active:translate-y-0.5">
       Generate OTP
     </button>
     
-    <!-- OTP Input and Verify Button (Visible Only After OTP Generation) -->
-     @if(isOtpGenerated){
-      <input 
-      type="number"
-      [(ngModel)]="otp"
-      name="otp"
-      placeholder="Verify OTP"
-      class="p-2 rounded-md text-red-500 my-2"/>
-    
-    <button type="button" (click)="VerifyOtp()"
-      class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300">
-      Verify
-    </button>
-     }
+    @if(isOtpGenerated){
+      <div class="flex flex-col mt-4">
+        <label for="otp" class="text-sm font-medium text-gray-700 mb-1">OTP Verification</label>
+        <input 
+          type="number"
+          id="otp"
+          [(ngModel)]="otp"
+          name="otp"
+          placeholder="Enter OTP code"
+          class="p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"/>
+      
+        <button type="button" (click)="VerifyOtp()"
+          class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow mt-2 transition duration-200 active:bg-indigo-700 active:translate-y-0.5">
+          Verify OTP
+        </button>
+      </div>
+    }
      
-
     <!-- Feedback Messages -->
-    <p *ngIf="message" class="text-green-500 text-center mt-2 font-semibold">{{ message }}</p>
-
-    <!-- Login Button -->
+    <div class="mt-4">
+      <p *ngIf="message" class="text-green-600 text-center font-medium py-1">{{ message }}</p>
+      <p *ngIf="errorMessage" class="text-red-600 text-center py-1">{{ errorMessage }}</p>
+      <p *ngIf="showRedirectMessage" class="text-green-600 text-center font-medium py-1 flex items-center justify-center">
+        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Redirecting to Dashboard...
+      </p>
+    </div>
+    
     <button 
       type="submit" 
-      class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2"
+      class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-md shadow transition duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed active:bg-blue-800 active:translate-y-0.5"
       [disabled]="templateform.invalid || !isOtpVerified"
       (click)="login()">
       Login
     </button>
-
-    <!-- Redirect and Error Messages -->
-    <p *ngIf="showRedirectMessage" class="text-green-500 text-center mt-2 font-semibold">
-      Redirecting to Dashboard...
-    </p>
-    <p *ngIf="errorMessage" class="text-red-500 text-center mt-2">{{ errorMessage }}</p>
-
-    <!-- Register Link -->
-    <a routerLink="/register" class="text-blue-600 text-center mt-2">Don't have an account? Register</a>
+    
+    <div class="text-center mt-4">
+      <a routerLink="/register" class="text-blue-600 hover:text-blue-800 font-medium transition">Don't have an account? Register</a>
+    </div>
+  </form>
+</div>

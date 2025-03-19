@@ -290,19 +290,15 @@ router.post('/generate-otp', async (req, res) => {
   const { email } = req.body;
 
   const otp = otpGenerator.generate(6, { digits: true,lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false});
-  console.log(otp);
   try {
-      kc = await User.findOneAndUpdate({email:email},{otp:otp})
-      // console.log(kc);
+      await User.findOneAndUpdate({email:email},{otp:otp})
 
-      console.log("----------------------x-----------------")
       const transporter = nodemailer.createTransport({
           service: 'gmail', 
           auth:  {
               user: process.env.EMAIL_USER, 
               pass: process.env.EMAIL_PASS,
         }});
-      console.log("----------------------y-----------------")
         
         transporter.verify((error, success) => {
           if (error) {
@@ -311,7 +307,6 @@ router.post('/generate-otp', async (req, res) => {
               console.log("SMTP Ready:", success);
           }
         })
-        console.log("----------------------z----------------")
 
 
       await transporter.sendMail({
@@ -320,10 +315,8 @@ router.post('/generate-otp', async (req, res) => {
           subject: 'OTP Verification',
           text: `Your OTP for verification is: ${otp}`
       });
-      console.log("----------------------w-----------------")
       
       res.status(200).json('OTP sent successfully');
-      console.log("----------------------v-----------------")
     } catch (error) {
       console.error(error);
       res.status(500).send('Error sending OTP');
@@ -334,8 +327,6 @@ router.post('/generate-otp', async (req, res) => {
 // Verify OTP
 router.post('/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
-  console.log("-----------------x----------------");
-  console.log(email);
 
   try {
     const otp_match = await User.findOne({ email, otp });
