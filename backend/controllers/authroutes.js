@@ -9,10 +9,24 @@ const router = express.Router();
 const verify = require('../middleware/auth');
 const cookieParser = require("cookie-parser");
 const session = require('express-session');
-const otpGenerator = require('otp-generator');
 const app = express();
-
+const bodyParser = require('body-parser');
+const otpGenerator = require('otp-generator');
 const nodemailer = require('nodemailer');
+
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+router.use(session({
+  secret: process.env.SESSION_SECRET || 'your_session_secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true }
+}));
+
 
 const transporter = nodemailer.createTransport({
   service: 'gmail', 
@@ -36,7 +50,7 @@ const sendWelcomeEmail = async (email,name) => {
     subject: 'Welcome to Our App!',
     text: `Hi,${name}
     \nThank you for signing in Just Belive in us and you will exceed!
-    \n Your OTP is ${otp}`
+   `
   };
   try {
     await transporter.sendMail(mailOptions);
@@ -47,22 +61,9 @@ const sendWelcomeEmail = async (email,name) => {
 
 }
 
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
-router.use(session({
-  secret: process.env.SESSION_SECRET || 'your_session_secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true }
-}));
-
 router.post('/register', async (req, res) => {
     const {name, email, password, role, createdby } = req.body;
     const userId = uuidv4();
-    const otp = otpGenerator.generate(6,{digits: true,aplhabets:false,upperCase:false,specialChars:false})
 
     try {
         let user = await User.findOne({ email });
@@ -71,7 +72,6 @@ router.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         user = new User({name, email, password: hashedPassword, id: userId, role: role || "user", createdby });
         await user.save();
-        await User.create({email,otp});
         sendWelcomeEmail(email,name);
         return res.send({ message: "User registered successfully"});
         
@@ -81,29 +81,8 @@ router.post('/register', async (req, res) => {
     }
 });
 
-
-router.post('/verify-otp', async (req, res) => {
-  const { email, otp } = req.body;
-
-  try {
-    const user = await User.findOne({ email, otp });
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid OTP' });
-    }
-
-    const token = jwt.sign({ name: user.name, id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "24h" });
-
-    res.cookie('userId', user.id, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
-      .send({ message: "Logged in successfully", token, role: user.role });
-  } catch (error) {
-    console.error("OTP Verification error:", error);
-    res.status(500).json({ error: "Server Error" });
-  }
-});
-
-
 router.post('/login', async (req, res) => {
-    const {email, password,otp } = req.body;
+    const {email, password } = req.body;
     try {
         let user = await User.findOne({ email });
         if (!user) return res.status(400).json({ error: "User not found" });
@@ -112,12 +91,7 @@ router.post('/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
         const token = jwt.sign({name:user.name, id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: "24h" });
-        const otp_verify = await User.findOne({email,otp}).exec();
-        if(otp_verify){
-          res.status(200).send('OTP verified successfully');
-        } else {
-            res.status(400).send('Invalid OTP');
-        }
+       
 
         res.cookie('userId', user.id, { 
             httpOnly: true,
@@ -310,6 +284,74 @@ router.post('/logout', (req, res) => {
         res.clearCookie('connect.sid');
         res.json({ message: 'Logged out successfully' });
     });
+});
+
+router.post('/generate-otp', async (req, res) => {
+  const { email } = req.body;
+
+  const otp = otpGenerator.generate(6, { digits: true,lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false});
+  console.log(otp);
+  try {
+      kc = await User.findOneAndUpdate({email:email},{otp:otp})
+      // console.log(kc);
+
+      console.log("----------------------x-----------------")
+      const transporter = nodemailer.createTransport({
+          service: 'gmail', 
+          auth:  {
+              user: process.env.EMAIL_USER, 
+              pass: process.env.EMAIL_PASS,
+        }});
+      console.log("----------------------y-----------------")
+        
+        transporter.verify((error, success) => {
+          if (error) {
+              console.log("SMTP Connection Error:", error);
+          } else {
+              console.log("SMTP Ready:", success);
+          }
+        })
+        console.log("----------------------z----------------")
+
+
+      await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: 'OTP Verification',
+          text: `Your OTP for verification is: ${otp}`
+      });
+      console.log("----------------------w-----------------")
+      
+      res.status(200).json('OTP sent successfully');
+      console.log("----------------------v-----------------")
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error sending OTP');
+  }
+
+});
+
+// Verify OTP
+router.post('/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+  console.log("-----------------x----------------");
+  console.log(email);
+
+  try {
+    const otp_match = await User.findOne({ email, otp });
+    console.log(otp_match);
+
+    if (otp_match) {
+      console.log("otp verified succesfully");
+      return res.status(200).json({ message: 'OTP verified successfully' });
+    } else {
+      console.log("y");
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Error verifying OTP' });
+  }
 });
 
 module.exports = router;

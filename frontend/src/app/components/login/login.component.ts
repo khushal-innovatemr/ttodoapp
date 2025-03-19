@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent {
   email = '';
+  otp: any = '';
   password = '';
   message = '';
   isSuccess = false;
@@ -20,10 +21,17 @@ export class LoginComponent {
   errorMessage = '';
   showTokenMessage = false; 
   showRedirectMessage = false;
+  isOtpVerified = false; 
+  isOtpGenerated = false; 
 
   constructor(private authService: AuthService, private router: Router) {}
 
   login(): void {
+    if (!this.isOtpVerified) {
+      this.errorMessage = 'Please verify your OTP before logging in.';
+      return;
+    }
+
     this.authService.login(this.email, this.password).subscribe({
       next: (res) => {
         this.token = res.token;  
@@ -33,19 +41,45 @@ export class LoginComponent {
         this.message = 'Token Verified!!';
         this.isSuccess = true;
 
-        if(res.role == 'admin'){
+        if (res.role === 'admin') {
           this.message = 'Redirecting to Admin Dashboard';
-          this.router.navigate(['/admin'])
-          return
+          this.router.navigate(['/admin']);
+          return;
         }
         
-          this.showRedirectMessage = true;
-          this.message = 'Redirecting to Dashboard...';
-          this.router.navigate(['/dashboard']);
-          
+        this.showRedirectMessage = true;
+        this.message = 'Redirecting to Dashboard...';
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        this.errorMessage = err.error.error;
+        this.errorMessage = err.error?.error || 'Login failed';
+      }
+    });
+  }
+
+  GenerateOtp(): void {
+    this.authService.GenerateOtp(this.email).subscribe({
+      next: () => {
+        this.message = 'OTP sent successfully';
+        this.isOtpGenerated = true;
+      },
+      error: (err) => {
+        this.message = 'Error sending OTP';
+        console.error(err);
+      }
+    });
+  }
+
+  VerifyOtp(): void {
+    this.authService.VerifyOtp(this.email, this.otp).subscribe({
+      next: () => {
+        this.isOtpVerified = true;
+        this.message = 'OTP verified successfully';
+      },
+      error: (err) => {
+        this.message = 'Invalid OTP';
+        this.isOtpVerified = false;
+        console.error(err);
       }
     });
   }

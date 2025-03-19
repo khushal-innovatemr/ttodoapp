@@ -1,4 +1,4 @@
-<!-- Token Verified Message (Top Right) -->
+<!-- Token Verified Message -->
 <div *ngIf="showTokenMessage" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
   <p>Token Verified!!</p>
 </div>
@@ -6,7 +6,8 @@
 <div class="max-w-md md:max-w-lg lg:max-w-xl mx-auto m-3 p-2 rounded-md bg-blue-100 flex flex-col justify-evenly">
   <h2 class="font-semibold text-black text-center">Login</h2>
 
-  <form (ngSubmit)="login()" class="flex flex-col">
+  <form #templateform="ngForm" class="flex flex-col">
+    <!-- Email Input -->
     <input 
       type="email" 
       [(ngModel)]="email" 
@@ -15,6 +16,7 @@
       required 
       class="p-2 rounded-md font-semibold text-black my-2" />
 
+    <!-- Password Input -->
     <input 
       type="password" 
       [(ngModel)]="password" 
@@ -23,21 +25,45 @@
       required 
       class="p-2 rounded-md font-semibold text-black my-2" />
 
+    <!-- Generate OTP Button -->
+    <button type="button" (click)="GenerateOtp()" 
+      class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300">
+      Generate OTP
+    </button>
+    
+    <!-- OTP Input and Verify Button (Visible Only After OTP Generation) -->
+     @if(isOtpGenerated){
+      <input 
+      type="number"
+      [(ngModel)]="otp"
+      name="otp"
+      placeholder="Verify OTP"
+      class="p-2 rounded-md text-red-500 my-2"/>
+    
+    <button type="button" (click)="VerifyOtp()"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-7 rounded-lg shadow-lg transition duration-300">
+      Verify
+    </button>
+     }
+     
 
+    <!-- Feedback Messages -->
+    <p *ngIf="message" class="text-green-500 text-center mt-2 font-semibold">{{ message }}</p>
+
+    <!-- Login Button -->
     <button 
       type="submit" 
-      class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2">
+      class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2"
+      [disabled]="templateform.invalid || !isOtpVerified"
+      (click)="login()">
       Login
     </button>
-  </form>
 
-  <!-- Redirect Message Below Submit Button -->
-  <p *ngIf="showRedirectMessage" class="text-green-500 text-center mt-2 font-semibold">
-    Redirecting to Dashboard...
-  </p>
+    <!-- Redirect and Error Messages -->
+    <p *ngIf="showRedirectMessage" class="text-green-500 text-center mt-2 font-semibold">
+      Redirecting to Dashboard...
+    </p>
+    <p *ngIf="errorMessage" class="text-red-500 text-center mt-2">{{ errorMessage }}</p>
 
-  <!-- Error Message -->
-  <p *ngIf="errorMessage" class="text-red-500 text-center mt-2">{{ errorMessage }}</p>
-
-  <a routerLink="/register" class="text-blue-600 text-center mt-2">Don't have an account? Register</a>
-</div>
+    <!-- Register Link -->
+    <a routerLink="/register" class="text-blue-600 text-center mt-2">Don't have an account? Register</a>

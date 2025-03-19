@@ -79,4 +79,14 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
+
+  GenerateOtp(email: string):Observable<any>{
+    console.log(email);
+    return this.http.post(`${this.API_URL}/generate-otp`,{email},this.header_options);
+  }
+
+  VerifyOtp(email:string,otp:number):Observable<any>{
+    return this.http.post(`${this.API_URL}/verify-otp`,{email,otp},this.header_options);
+  }
+
 }
