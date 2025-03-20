@@ -49,6 +49,7 @@ async function sendDeadlineEmails() {
     try {
       const tasks = await Todo.find();
       const currentDate = new Date();
+  
       for (const task of tasks) {
         if(!task.completed){
             if (new Date(task.deadline) < currentDate) {
@@ -64,8 +65,8 @@ async function sendDeadlineEmails() {
                     let mailDetails = {
                         from: process.env.EMAIL_USER,
                         to: user.email,
-                        subject: "Tasks Deadline Exceeded",
-                        text: `Hello,
+                        subject: "Task Deadline Exceeded",
+                        text: `Hey,
                         
                         Your deadline to complete the task is over. Please delete the task soon.
                         

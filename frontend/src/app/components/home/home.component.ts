@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
   name = '';
+  role = '';
   tasks: any[] = [];
   edit: boolean = false;
   editTask: any = {};
@@ -95,6 +96,7 @@ export class HomeComponent implements OnInit {
       try {
         const tokenData = JSON.parse(atob(token.split('.')[1]));
         this.name = tokenData.name || 'User';
+        this.role = tokenData.role || 'user';
       } catch (error) {
         console.error('Error decoding token:', error);
         this.name = 'User';
