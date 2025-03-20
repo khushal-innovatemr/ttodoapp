@@ -188,7 +188,7 @@ router.get('/completed', async (req, res) => {
               $match: {
                 completed: true,
               },
-            },
+            }, 
             {
               $count: "completedCount",
             },
@@ -212,6 +212,7 @@ router.get('/completed', async (req, res) => {
         },
       },
     ]);
+    console.log(task);
     res.send(task);
   } catch (error) {
     console.error("Error:", error);
