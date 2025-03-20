@@ -1,68 +1,70 @@
+<!-- Success Message Box (Top Right) -->
 <div *ngIf="successMessage" class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg">
-    {{ successMessage }}
-  </div>
-  
-  <div class="max-w-md md:max-w-lg lg:max-w-xl mx-auto m-3 p-2 rounded-md bg-blue-100 flex flex-col justify-evenly">
-    <h2 class="font-semibold text-black text-center">Register</h2>
+  {{ successMessage }}
+</div>
+<div class="max-w-md md:max-w-lg lg:max-w-xl mx-auto my-8 p-6 rounded-lg bg-white shadow-lg border border-gray-200">
+  <h2 class="text-xl font-bold text-gray-800 text-center mb-6">Register</h2>
     
     <form  #templateform="ngForm" (ngSubmit)="register()" class="flex flex-col">
-
+      
+      <label for="name" class="text-sm font-medium text-gray-700 mb-1">Name</label>
       <input 
       type="name" 
       [(ngModel)]="name" 
       name="name" 
       placeholder="Name" 
       required 
-      class="p-2 rounded-md font-semibold text-black my-2" />
-
+      class="p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" />
+      
+      <label for="email" class="text-sm font-medium text-gray-700 mb-1">Email</label>
       <input 
-        type="email" 
-        [(ngModel)]="email" 
-        name="email" 
-        placeholder="Email" 
-        required 
-        email
-        class="p-2 rounded-md font-semibold text-black my-2"
-        #mail = "ngModel"/>
-  
+      type="email" 
+      [(ngModel)]="email" 
+      name="email" 
+      placeholder="Email" 
+      required 
+      email
+      class="p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+      #mail = "ngModel"/>
+
       <h5 class="text-red-500" *ngIf="mail.invalid && mail.touched">Please enter correct email</h5>
-
+      
+      <label for="password" class="text-sm font-medium text-gray-700 mb-1">Password</label>
       <input 
-        type="password" 
-        [(ngModel)]="password" 
-        name="password" 
-        placeholder="Password" 
-        required
-        pattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])' 
-        password
-        class="p-2 rounded-md font-semibold text-black my-2" 
-        #pass="ngModel"/>
+      type="password" 
+      [(ngModel)]="password" 
+      name="password" 
+      placeholder="Password" 
+      required
+      password
+      class="p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" 
+      #pass="ngModel"/>
       
-      <h5 class="text-red-500" *ngIf="pass.invalid && pass.touched">password must have one uppercase,one lowercase and length should be greater than 6</h5>
+<h5 class="text-red-500" *ngIf="pass.invalid && pass.touched">password must have one uppercase,one lowercase and length should be greater than 6</h5>
 
 
-      <label for="role" class="flex flex-col font-bold text-blue-600">Choose Your Role</label>
-      <select [(ngModel)]="role" name="role" class="p-2 rounded-md font-semibold text-black my-2">
-          <!-- <option value="admin">admin</option> -->
-          <option value="manager">manager</option>
-          <option value="user">user</option> 
+<label for="role" class="text-sm font-xl font-bold text-blue-700 mb-1">Choose Your Role</label>
+<select [(ngModel)]="role" name="role" class="p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+  <!-- <option value="admin">admin</option> -->
+  <option value="manager">manager</option>
+        <option value="user">user</option> 
+      </select>
+       
+      <label for = "createdby" class = "text-sm font-bold text-violet-700 mb-1">Created By</label>
+      <select [(ngModel)]="createdby" name = "createdby" class = "p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+        <!-- <option value="self">Self</option> -->
+        <option value="admin">Admin</option>
       </select>
       
-      <label for="createdby" class="flex flex-col font-bold text-green-600">Created By</label>
-      <select [(ngModel)]="createdby" name="createdby" class="p-2 rounded-md font-semibold text-black my-2">
-          <!-- <option value="admin">admin</option> -->
-          <option value="admin">Admin</option> 
-      </select>
-
+      
       <button 
-        type="submit" 
-        class="bg-blue-500 hover:bg-blue-600 p-2 rounded-md text-white font-semibold mt-2"
-        [disabled]="templateform.invalid">
-        Register
-      </button>
-    </form>
+      type="submit" 
+      class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-md shadow transition duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed active:bg-blue-800 active:translate-y-0.5"
+      [disabled]="templateform.invalid">
+      Register
+    </button>
+  </form>
   
-    <!-- Error Message -->
-    <p *ngIf="errorMessage" class="text-red-500 text-center mt-2">{{ errorMessage }}</p>
-  
-  </div>
+  <!-- Error Message -->
+  <p *ngIf="errorMessage" class="text-red-500 text-center mt-2">{{ errorMessage }}</p>
+</div>

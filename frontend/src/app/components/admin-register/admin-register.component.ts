@@ -34,9 +34,9 @@ export class AdminRegisterComponent {
           
           setTimeout(() => {
             this.router.navigate(['/admin']);
-          }, 2000);
+          });
           
-        }, 3000);
+        },1000);
       },
       error: (err) => (this.errorMessage = err.error.error)
     });

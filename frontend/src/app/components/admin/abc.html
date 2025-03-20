@@ -1,0 +1,76 @@
+
+@if (comp) {
+    <div class="mt-4 p-6 bg-white shadow-md rounded-lg border border-gray-300 w-80 mx-auto absolute left-4 ">
+        <h3 class="text-xl font-bold text-gray-700 mb-3 text-center">📌 Task Summary</h3>
+        <div class="flex justify-between items-center border-b pb-2 mb-2">
+            <p class="text-green-600 font-semibold text-lg">✅ Completed Tasks:</p>
+            <p class="text-gray-700 text-lg font-bold">{{ completed_task[0].completedCount }}</p>
+        </div>
+        <div class="flex justify-between items-center border-b pb-2 mb-2">
+            <p class="text-green-600 font-semibold text-lg">⏳ Pending Tasks:</p>
+            <p class="text-gray-700 text-lg font-bold">{{ completed_task[0].pendingCount }}</p>
+        </div>
+
+    </div>
+    }
+
+    @if (showTasks) {
+    <div class="max-w-4xl mx-auto my-5">
+        <div class="text-2xl font-semibold text-center p-3 bg-blue-50 rounded-lg shadow">
+            User's Task List
+        </div>
+
+        @if (noTasksMessage) {
+        <p class="text-center text-red-500 font-semibold p-3">{{ noTasksMessage }}</p>
+        } @else {
+        <div class="flex flex-col md:flex-row mx-auto">
+            <div
+                class="flex flex-col my-3 p-5 m-3 rounded-lg bg-white shadow-xl md:w-2/4 transition-all duration-300 hover:bg-blue-200">
+                <p class="font-semibold text-xl text-black">Todo</p>
+                <ul class="flex flex-col space-y-3">
+                    @for (task of views; track task.id) {
+                    @if (!task.completed) {
+                    <div class="p-5 m-2 bg-blue-100 rounded-lg shadow-lg hover:bg-blue-300">
+                        <p class="font-semibold text-black">Name</p>
+                        <p class="bg-blue-200 p-3 rounded-lg shadow text-black">{{ task.name }}</p>
+                        <p class="font-semibold text-black mt-1">Description</p>
+                        <p class="bg-blue-200 p-3 rounded-lg shadow text-black">{{ task.description }}</p>
+                        <p class="font-semibold text-black mt-1">Deadline</p>
+                        <p class="bg-blue-200 p-3 rounded-lg shadow text-black">{{ task.deadline }}</p>
+                        <button (click)="handleDelete(task)"
+                            class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded mt-2">
+                            Delete
+                        </button>
+                    </div>
+                    }
+                    }
+                </ul>
+            </div>
+
+            <!-- Completed Tasks -->
+            <div
+                class="flex flex-col my-3 p-5 m-3 rounded-lg bg-white shadow-xl md:w-2/4 transition-all duration-300 hover:bg-green-100">
+                <p class="font-semibold text-xl text-black">Completed</p>
+                <ul class="flex flex-col space-y-3">
+                    @for (task of views; track task.id) {
+                    @if (task.completed) {
+                    <div class="p-5 m-2 bg-green-100 rounded-lg shadow-xl hover:bg-green-200">
+                        <p class="font-semibold text-black">Name</p>
+                        <p class="bg-green-300 p-3 rounded-lg shadow text-black">{{ task.name }}</p>
+                        <p class="font-semibold text-black mt-1">Description</p>
+                        <p class="bg-green-300 p-3 rounded-lg shadow text-black">{{ task.description }}</p>
+                        <p class="font-semibold text-black mt-1">Deadline</p>
+                        <p class="bg-green-300 p-3 rounded-lg shadow text-black">{{ task.deadline }}</p>
+                        <button (click)="handleDelete(task)"
+                            class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded mt-2">
+                            Delete
+                        </button>
+                    </div>
+                    }
+                    }
+                </ul>
+            </div>
+        </div>
+        }
+    </div>
+    }

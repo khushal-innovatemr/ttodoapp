@@ -30,13 +30,13 @@ export class RegisterComponent {
         this.successMessage = 'User Created!';
         
         setTimeout(() => {
-          this.successMessage = 'Redirecting to Admin..';
+          this.successMessage = 'Redirecting to Login..';
           
           setTimeout(() => {
-            this.router.navigate(['/admin']);
-          }, 2000);
+            this.router.navigate(['/login']);
+          });
           
-        }, 3000);
+        });
       },
       error: (err) => (this.errorMessage = err.error.error)
     });

@@ -1,7 +1,5 @@
-import { Component, OnInit, Output, output } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TodoService } from '../../services/todo.service';
-import { EventEmitter} from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -12,38 +10,37 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './todo-add.component.css'
 })
 export class TodoAddComponent implements OnInit {
-  task:any;
-  constructor(private todo:TodoService){}
-  
-  ngOnInit(): void {
-    this.handleChange();
+  constructor(private todo: TodoService) {}
+
+  name: string = '';
+  description: string = '';
+  deadline: any;
+  createdAt: any;
+  disable: boolean = true;
+
+  @Output() todoAdd: EventEmitter<any> = new EventEmitter();
+
+  ngOnInit(): void {}
+
+  handleChange() {
+    this.disable = !(this.name.trim().length > 0 && this.description.trim().length > 0);
   }
 
-  name:string = 'sample';
-  description:string = 'sample';
-  deadline:any
-  createdAt:any
-  disable:boolean = true;
-
-  @Output() todoAdd:EventEmitter<any> = new EventEmitter();
- 
-  handleChange(){
-    if(this.name.length>0 && this.description.length >0){
-      this.disable = false;
-    }
-    else{
-      this.disable = true;
-    }
-  }
-
-  handleSubmit(){
+  handleSubmit() {
     this.todoAdd.emit({
-      name:this.name,
-      description:this.description,
-      deadline:this.deadline,
-      createdAt:this.createdAt,
-    } as any)
-    this.handleChange();
+      name: this.name,
+      description: this.description,
+      deadline: this.deadline,
+      createdAt: this.createdAt,
+    });
+    this.resetForm();
   }
 
-}
+  resetForm() {
+    this.name = '';
+    this.description = '';
+    this.deadline = null;
+    this.createdAt = null;
+    this.disable = true;
+  }
+} 
