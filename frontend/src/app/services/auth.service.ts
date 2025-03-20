@@ -57,7 +57,7 @@ export class AuthService {
   }
 
   completed_count():Observable<any> {
-    return this.http.get(`${this.API_URL}/completed`,this.header_options);
+    return this.http.get(`${this.API_URL}/completed`,this.header_options); 
   }
 
   isAuthenticated(): boolean {

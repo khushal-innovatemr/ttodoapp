@@ -10,7 +10,7 @@ import { AuthService } from './services/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [TodoAddComponent, FormsModule, CommonModule, RouterModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
