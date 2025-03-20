@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
   edit: boolean = false;
   editTask: any = {};
   countTask:any;
+  deadline:any;
   completed_task:any;
   pending_task:any;
   email: any = '';
@@ -26,6 +27,7 @@ export class HomeComponent implements OnInit {
   showForm:boolean = false;
   showTask:boolean = false;
   id:any;
+  mails: any;
   
   constructor(
     private todo: TodoService,
@@ -86,7 +88,6 @@ export class HomeComponent implements OnInit {
       });
     }
   }
-
 
   getUserEmail(): void {
     const token = this.authService.getToken();

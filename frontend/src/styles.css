@@ -2,12 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-body.dark-mode {
-  background-color: #2d3436;
-  color: #dfe6e9;
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --nav-bg-color: #ebf8ff;
 }
 
-body.light-mode {
-  background-color: #dfe6e9;
-  color: #2d3436;
+body.dark-mode {
+  --bg-color: #1a202c;
+  --text-color: #a0aec0;
+  --nav-bg-color: #2d3748;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+nav {
+  background-color: var(--nav-bg-color);
 }

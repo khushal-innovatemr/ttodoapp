@@ -20,6 +20,7 @@
     "fast-two-sms": "^3.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.10.0",
     "otp-generator": "^4.0.1",
     "uuid": "^11.1.0"
